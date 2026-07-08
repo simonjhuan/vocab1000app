@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">ศัพท์ ม.2</string>
+    <string name="title_activity_main">ศัพท์ ม.2</string>
+    <string name="package_name">com.vocab.m2</string>
+    <string name="custom_url_scheme">com.vocab.m2</string>
+</resources>

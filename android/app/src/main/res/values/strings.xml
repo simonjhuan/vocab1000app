@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Vocab1000</string>
+    <string name="title_activity_main">Vocab1000</string>
+    <string name="package_name">com.vocab1000app</string>
+    <string name="custom_url_scheme">com.vocab1000app</string>
+</resources>

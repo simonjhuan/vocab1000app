@@ -1,0 +1,56 @@
+workflows:
+  m1-ios-app-store:
+    name: Vocab M1 - iOS App Store
+    max_build_duration: 60
+    instance_type: mac_mini_m2
+    integrations:
+      app_store_connect: codemagic_asc_api_key   # name of the App Store Connect API key you add in Codemagic > Teams > Integrations
+    environment:
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.vocab.m1
+      vars:
+        XCODE_PROJECT: "ios-M1/App/App.xcodeproj"
+        XCODE_SCHEME: "App"
+        APP_STORE_APPLE_ID: 0000000000   # replace with the numeric Apple ID of the App Store Connect app record
+      node: 20
+    triggering:
+      events:
+        - push
+      branch_patterns:
+        - pattern: main
+          include: true
+    scripts:
+      - name: Install npm dependencies
+        script: npm ci
+
+      - name: Select M1 Capacitor config
+        script: cp capacitor.config.m1.ts capacitor.config.ts
+
+      - name: Sync Capacitor iOS project
+        script: npx cap sync ios
+
+      - name: Set up code signing certificate + provisioning profile
+        script: |
+          xcode-project use-profiles
+
+      - name: Increment build number
+        script: |
+          cd $XCODE_PROJECT/..
+          agvtool new-version -all $(($(app-store-connect get-latest-app-store-build-number "$APP_STORE_APPLE_ID") + 1))
+
+      - name: Build ipa for distribution
+        script: |
+          xcode-project build-ipa \
+            --project "$XCODE_PROJECT" \
+            --scheme "$XCODE_SCHEME"
+
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+
+    publishing:
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: true
+        submit_to_app_store: false

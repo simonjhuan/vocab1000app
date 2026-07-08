@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "vocab-m1",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "http.server", "8753", "--directory", "D:\\AndroidStudioProjects\\vocab1000app\\vocab_by_grade\\M1"],
+      "port": 8753
+    }
+  ]
+}

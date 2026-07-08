@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GAT-PAT Daily Words</title>
+<script src="capacitor.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0d0d14;
+  --surface: #16161f;
+  --surface2: #1e1e2e;
+  --accent: #7c6af7;
+  --accent2: #f76a8c;
+  --accent3: #6af7c8;
+  --text: #e8e8f0;
+  --text2: #8888aa;
+  --correct: #6af7c8;
+  --wrong: #f76a8c;
+  --border: rgba(255,255,255,0.07);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Kanit', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+/* Background grid */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(124,106,247,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(124,106,247,0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.app { position: relative; z-index: 1; max-width: 720px; margin: 0 auto; padding: 24px 16px 60px; }
+
+/* Header */
+header {
+  text-align: center;
+  padding: 32px 0 28px;
+}
+.logo {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.25em;
+  color: var(--accent);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+h1 {
+  font-size: 2.2rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1.2;
+}
+.subtitle { font-size: 0.9rem; color: var(--text2); margin-top: 8px; font-weight: 300; }
+
+/* Date badge */
+.date-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 50px;
+  padding: 6px 16px;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--accent3);
+  margin: 12px auto 0;
+}
+
+/* Tab nav */
+.tabs {
+  display: flex;
+  gap: 4px;
+  background: var(--surface);
+  border-radius: 14px;
+  padding: 5px;
+  margin-bottom: 24px;
+  border: 1px solid var(--border);
+}
+.tab {
+  flex: 1;
+  padding: 10px;
+  text-align: center;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text2);
+  transition: all 0.2s;
+  border: none;
+  background: transparent;
+}
+.tab.active {
+  background: var(--accent);
+  color: white;
+  font-weight: 600;
+}
+
+/* Progress bar */
+.progress-wrap {
+  background: var(--surface2);
+  border-radius: 50px;
+  height: 6px;
+  margin-bottom: 20px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  border-radius: 50px;
+  transition: width 0.4s ease;
+}
+.progress-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  color: var(--text2);
+  margin-bottom: 8px;
+  font-family: 'Space Mono', monospace;
+}
+
+/* Score display */
+.score-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.score-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px;
+  text-align: center;
+}
+.score-card .label { font-size: 0.7rem; color: var(--text2); text-transform: uppercase; letter-spacing: 0.1em; }
+.score-card .value { font-family: 'Space Mono', monospace; font-size: 1.6rem; font-weight: 700; margin-top: 4px; }
+.score-card.accent .value { color: var(--accent); }
+.score-card.correct .value { color: var(--correct); }
+.score-card.wrong .value { color: var(--wrong); }
+
+/* Quiz card */
+.quiz-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 32px 24px 28px;
+  margin-bottom: 20px;
+  position: relative;
+  overflow: hidden;
+}
+.quiz-card::before {
+  content: '';
+  position: absolute;
+  top: -40px; right: -40px;
+  width: 120px; height: 120px;
+  background: radial-gradient(circle, rgba(124,106,247,0.12), transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+.word-number {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--text2);
+  letter-spacing: 0.1em;
+  margin-bottom: 16px;
+}
+.word-display {
+  font-family: 'Space Mono', monospace;
+  font-size: 2.6rem;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+  line-height: 1.2;
+}
+.phonetic { font-size: 0.85rem; color: var(--text2); margin-bottom: 24px; min-height: 20px; }
+
+/* Options */
+.options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.option {
+  background: var(--surface2);
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 12px;
+  font-size: 0.95rem;
+  font-weight: 400;
+  cursor: pointer;
+  transition: all 0.18s;
+  text-align: center;
+  color: var(--text);
+  line-height: 1.4;
+}
+.option:hover { border-color: var(--accent); transform: translateY(-2px); background: rgba(124,106,247,0.08); }
+.option.correct { border-color: var(--correct); background: rgba(106,247,200,0.1); color: var(--correct); }
+.option.wrong { border-color: var(--wrong); background: rgba(247,106,140,0.1); color: var(--wrong); }
+.option:disabled { pointer-events: none; }
+
+/* Buttons */
+.btn-row { display: flex; gap: 10px; margin-top: 20px; }
+.btn {
+  flex: 1;
+  padding: 13px;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  font-family: 'Kanit', sans-serif;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.18s;
+}
+.btn-primary { background: var(--accent); color: white; }
+.btn-primary:hover { background: #6a58e0; transform: translateY(-2px); }
+.btn-ghost { background: transparent; border-color: var(--border); color: var(--text2); }
+.btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+/* Result screen */
+.result-screen {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 40px 24px;
+  text-align: center;
+}
+.result-emoji { font-size: 3.5rem; margin-bottom: 16px; }
+.result-title { font-size: 1.6rem; font-weight: 700; margin-bottom: 8px; }
+.result-score {
+  font-family: 'Space Mono', monospace;
+  font-size: 3rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--accent), var(--accent3));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 16px 0;
+}
+.result-sub { color: var(--text2); font-size: 0.9rem; margin-bottom: 28px; }
+
+/* History tab */
+.history-list { display: flex; flex-direction: column; gap: 10px; }
+.history-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: border-color 0.2s;
+}
+.history-item:hover { border-color: rgba(124,106,247,0.3); }
+.history-date { font-family: 'Space Mono', monospace; font-size: 0.8rem; color: var(--text2); }
+.history-name { font-size: 1rem; font-weight: 500; margin-top: 2px; }
+.history-right { text-align: right; }
+.history-score { font-family: 'Space Mono', monospace; font-size: 1.3rem; font-weight: 700; color: var(--accent); }
+.history-detail { font-size: 0.75rem; color: var(--text2); margin-top: 2px; }
+.history-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 50px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  margin-top: 4px;
+}
+.badge-s { background: rgba(106,247,200,0.15); color: var(--correct); }
+.badge-a { background: rgba(124,106,247,0.15); color: var(--accent); }
+.badge-b { background: rgba(247,200,106,0.15); color: #f7c86a; }
+.badge-c { background: rgba(247,106,140,0.15); color: var(--wrong); }
+.empty-state { text-align: center; padding: 60px 0; color: var(--text2); }
+.empty-state .icon { font-size: 3rem; margin-bottom: 12px; }
+
+/* Finish banner */
+.finish-banner {
+  background: linear-gradient(135deg, rgba(124,106,247,0.2), rgba(247,106,140,0.1));
+  border: 1px solid rgba(124,106,247,0.3);
+  border-radius: 14px;
+  padding: 16px 20px;
+  text-align: center;
+  margin-bottom: 20px;
+  display: none;
+}
+.finish-banner.show { display: block; }
+
+/* Feedback toast */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 24px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  z-index: 999;
+  white-space: nowrap;
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+.toast.correct-toast { border-color: var(--correct); color: var(--correct); }
+.toast.wrong-toast { border-color: var(--wrong); color: var(--wrong); }
+
+/* View toggle hidden */
+.view { display: none; }
+.view.active { display: block; }
+
+@media (max-width: 480px) {
+  .word-display { font-size: 1.9rem; }
+  .options { grid-template-columns: 1fr; }
+  .score-row { grid-template-columns: 1fr 1fr 1fr; }
+  .score-card .value { font-size: 1.2rem; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="logo">✦ GAT · PAT · TGAT ✦</div>
+    <h1>คำศัพท์ประจำวัน</h1>
+    <p class="subtitle">1,000 คำ • วันละ 30 คำ • บันทึกคะแนนอัตโนมัติ</p>
+    <div class="date-badge" id="dateBadge">📅 —</div>
+  </header>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('quiz')">🎯 ฝึกวันนี้</button>
+    <button class="tab" onclick="switchTab('history')">📊 ประวัติคะแนน</button>
+  </div>
+
+  <!-- QUIZ VIEW -->
+  <div id="quizView" class="view active">
+
+    <!-- Already completed today -->
+    <div class="finish-banner" id="finishBanner">
+      🎉 ทำครบ 30 คำวันนี้แล้ว! มาใหม่พรุ่งนี้นะครับ
+    </div>
+
+    <div class="progress-label">
+      <span id="progressLabel">คำที่ 0 / 30</span>
+      <span id="accuracyLabel">ความแม่นยำ —</span>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-bar" id="progressBar" style="width:0%"></div>
+    </div>
+
+    <div class="score-row">
+      <div class="score-card accent">
+        <div class="label">คะแนน</div>
+        <div class="value" id="scoreDisplay">0</div>
+      </div>
+      <div class="score-card correct">
+        <div class="label">ถูก</div>
+        <div class="value" id="correctCount">0</div>
+      </div>
+      <div class="score-card wrong">
+        <div class="label">ผิด</div>
+        <div class="value" id="wrongCount">0</div>
+      </div>
+    </div>
+
+    <!-- Quiz card -->
+    <div class="quiz-card" id="quizCard">
+      <div class="word-number" id="wordNumber">WORD 1 / 30</div>
+      <div class="word-display" id="wordDisplay">—</div>
+      <div class="phonetic" id="phonetic"></div>
+      <div class="options" id="optionsBox"></div>
+      <div class="btn-row">
+        <button class="btn btn-ghost" onclick="speakWord()">🔊 ฟังเสียง</button>
+        <button class="btn btn-ghost" onclick="skipWord()">⏭ ข้ามคำนี้</button>
+      </div>
+    </div>
+
+    <!-- Result screen (hidden until done) -->
+    <div id="resultScreen" style="display:none;">
+      <div class="result-screen">
+        <div class="result-emoji" id="resultEmoji">🎉</div>
+        <div class="result-title" id="resultTitle">ยอดเยี่ยม!</div>
+        <div class="result-score" id="resultScore">300</div>
+        <div class="result-sub" id="resultSub">ถูก 0 / 30 คำ</div>
+        <button class="btn btn-primary" style="max-width:280px;margin:0 auto;display:block;margin-bottom:10px;" onclick="reviewMistakes()">📋 ดูคำที่ตอบผิด</button>
+        <button class="btn btn-ghost" style="max-width:280px;margin:0 auto;display:block;margin-bottom:10px;" onclick="replayToday()">🔄 เล่นซ้ำวันนี้</button>
+        <button class="btn btn-ghost" style="max-width:280px;margin:0 auto;display:block;" onclick="shareToLine()">💚 แชร์ผลให้ผู้ปกครอง</button>
+      </div>
+      <!-- Mistakes list -->
+      <div id="mistakesList" style="margin-top:16px;display:none;">
+        <div style="font-weight:600;margin-bottom:10px;font-size:0.9rem;color:var(--text2);">คำที่ตอบผิด:</div>
+        <div id="mistakesContent"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- HISTORY VIEW -->
+  <div id="historyView" class="view">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+      <div style="font-weight:600;">ประวัติการทำข้อสอบ</div>
+      <button class="btn btn-ghost" style="flex:none;padding:8px 14px;font-size:0.8rem;" onclick="clearHistory()">🗑 ล้างข้อมูล</button>
+    </div>
+    <div id="historyList" class="history-list"></div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ════════════════════════════════════════════
+//  WORD LIST
+// ════════════════════════════════════════════
+const allWords = [
+  { word: "ability", meaning: "ความสามารถ" },
+  { word: "abnormal", meaning: "ผิดปกติ" },
+  { word: "abolish", meaning: "ยกเลิก, เพิกถอน" },
+  { word: "absolute", meaning: "เต็มที่, แท้จริง, ไม่เจือปน" },
+  { word: "absorb", meaning: "ดูดซึม, รับเข้า" },
+  { word: "abstract", meaning: "ข้อสรุป, นามธรรม" },
+  { word: "absurd", meaning: "เหลวไหล, ไร้สาระ, น่าขัน" },
+  { word: "abuse", meaning: "การข่มเหง, ใช้ในทางที่ผิด" },
+  { word: "accelerate", meaning: "เร่งความเร็ว, เร่งให้เกิดขึ้น" },
+  { word: "accumulate", meaning: "สะสม, สั่งสม" },
+  { word: "accurate", meaning: "แม่นยำ, ตรง(ถูก)" },
+  { word: "accuse", meaning: "กล่าวหา, ฟ้องร้อง" },
+  { word: "active", meaning: "คล่องแคล่ว, ทำงานอยู่, มีฤทธิ์" },
+  { word: "acute", meaning: "รุนแรง, ฉลาด, เฉียบพลัน, แหลมคม" },
+  { word: "adapt", meaning: "ปรับให้เหมาะสม" },
+  { word: "addicted", meaning: "ที่ติดเป็นนิสัย, เสพติด" },
+  { word: "adequate", meaning: "เพียงพอ, พอแล้ว" },
+  { word: "admire", meaning: "ชมเชย, นับถือ" },
+  { word: "adopt", meaning: "เลือกใช้, รับมาเลี้ยงดู" },
+  { word: "advantage", meaning: "ผลประโยชน์, ข้อดี" },
+  { word: "advocate", meaning: "ทนาย, สนับสนุน" },
+  { word: "aggravate", meaning: "ทำให้แย่ลง, ทำให้โกรธ" },
+  { word: "aggressive", meaning: "ก้าวร้าว" },
+  { word: "agriculture", meaning: "เกษตรกรรม" },
+  { word: "alleviate", meaning: "ระงับ, ทำให้บรรเทา" },
+  { word: "allocate", meaning: "จัดสรร, ปันส่วน" },
+  { word: "alternative", meaning: "ทางเลือก" },
+  { word: "ambiguous", meaning: "กำกวม, คลุมเครือ, ไม่ชัดเจน" },
+  { word: "ambition", meaning: "ความทะเยอทะยาน" },
+  { word: "amplify", meaning: "ขยาย, ทำให้เพิ่มขึ้น" },
+  { word: "analysis", meaning: "การวิเคราะห์" },
+  { word: "ancestor", meaning: "บรรพบุรุษ" },
+  { word: "ancient", meaning: "โบราณ, เก่าแก่" },
+  { word: "anxiety", meaning: "ความวิตกกังวล" },
+  { word: "apology", meaning: "คำขอโทษ, การขออภัย" },
+  { word: "apparent", meaning: "เด่นชัด, ชัดเจน" },
+  { word: "appetite", meaning: "ความอยากอาหาร, ปรารถนา" },
+  { word: "appreciate", meaning: "ซาบซึ้ง, เห็นคุณค่า" },
+  { word: "appropriate", meaning: "เหมาะสม" },
+  { word: "approximate", meaning: "ประมาณ, คล้ายคลึง" },
+  { word: "aptitude", meaning: "ความถนัด, ความเหมาะสม" },
+  { word: "architecture", meaning: "สถาปัตยกรรม" },
+  { word: "arrogance", meaning: "ความเย่อหยิ่ง, ความจองหอง" },
+  { word: "aspect", meaning: "แง่มุม, มุม, ลักษณะ" },
+  { word: "aspiration", meaning: "ความทะเยอทะยาน, สูดลมหายใจ" },
+  { word: "assemble", meaning: "รวมกัน, ประกอบ" },
+  { word: "asset", meaning: "สินทรัพย์, ทรัพย์สิน" },
+  { word: "assume", meaning: "คาดคะเน, ทึกทักเอาเอง" },
+  { word: "assure", meaning: "ทำให้มั่นใจ, รับรอง" },
+  { word: "atmosphere", meaning: "บรรยากาศ" },
+  { word: "attain", meaning: "บรรลุผล, สำเร็จ" },
+  { word: "attitude", meaning: "ทัศนคติ" },
+  { word: "authentic", meaning: "ของแท้, น่าเชื่อถือ" },
+  { word: "authority", meaning: "ผู้มีอำนาจ, อำนาจ" },
+  { word: "aware", meaning: "ตระหนักรู้" },
+  { word: "awkward", meaning: "งุ่มง่าม, กระอักกระอ่วน" },
+  { word: "bankrupt", meaning: "ล้มละลาย" },
+  { word: "bargain", meaning: "ต่อรอง, ข้อตกลงทางการค้า" },
+  { word: "bias", meaning: "อคติ, ลำเอียง" },
+  { word: "bizarre", meaning: "แปลกประหลาด" },
+  { word: "blame", meaning: "กล่าวโทษ, ตำหนิ" },
+  { word: "broadcast", meaning: "กระจาย, ถ่ายทอดสัญญาณ" },
+  { word: "brutal", meaning: "โหดร้าย, โหดเหี้ยม" },
+  { word: "calamity", meaning: "ภัยพิบัติ, หายนะ" },
+  { word: "candidate", meaning: "ผู้สมัคร, ผู้ท้าชิง" },
+  { word: "caution", meaning: "การตักเตือน, ความระมัดระวัง" },
+  { word: "chaos", meaning: "ความวุ่นวาย, ยุ่งเหยิง" },
+  { word: "chronic", meaning: "เรื้อรัง, ที่ติดเป็นนิสัย" },
+  { word: "circumstance", meaning: "เหตุการณ์, พฤติการณ์, เงื่อนไข" },
+  { word: "clarify", meaning: "ทำให้ชัดเจน, ทำให้เข้าใจง่าย" },
+  { word: "coherent", meaning: "เชื่อมโยงกัน, สอดคล้องกัน" },
+  { word: "collapse", meaning: "การพังทลาย, ล้มลง" },
+  { word: "compensate", meaning: "ชดเชย, ทดแทน" },
+  { word: "competence", meaning: "ความสามารถ, อำนาจ" },
+  { word: "conceal", meaning: "ซ่อน, ปิดบัง" },
+  { word: "concentrate", meaning: "เพ่งเล็ง, ให้ความสนใจ" },
+  { word: "concise", meaning: "สั้น, รัดกุม, รวบรัด" },
+  { word: "confident", meaning: "ที่มั่นใจ, กล้า" },
+  { word: "conflict", meaning: "ความขัดแย้ง, การต่อสู้" },
+  { word: "congestion", meaning: "ความแออัด" },
+  { word: "conserve", meaning: "ถนอมไว้, อนุรักษ์" },
+  { word: "consistent", meaning: "ที่สอดคล้องกัน, มั่นคง, สม่ำเสมอ" },
+  { word: "contaminate", meaning: "เจือปน, ปนเปื้อน" },
+  { word: "controversy", meaning: "การโต้เถียง" },
+  { word: "courage", meaning: "ความกล้าหาญ" },
+  { word: "crime", meaning: "อาชญากรรม" },
+  { word: "crisis", meaning: "วิกฤติ" },
+  { word: "crucial", meaning: "สำคัญมาก, เด็ดขาด" },
+  { word: "curiosity", meaning: "ความอยากรู้" },
+  { word: "damage", meaning: "ความเสียหาย, สร้างความเสียหาย" },
+  { word: "debate", meaning: "การโต้แย้ง, การถกเถียง" },
+  { word: "deceive", meaning: "หลอกลวง" },
+  { word: "decline", meaning: "ลดลง, ปฏิเสธ" },
+  { word: "dedicate", meaning: "ทุ่มเท, อุทิศ" },
+  { word: "deliberate", meaning: "สุขุม, ใคร่ครวญ, โดยเจตนา" },
+  { word: "demonstrate", meaning: "สาธิต, เดินประท้วง" },
+  { word: "deplete", meaning: "ทำให้หมด, ลดลงอย่างมาก" },
+  { word: "derive", meaning: "ได้มาจาก, กำเนิดมาจาก" },
+  { word: "desperate", meaning: "อันตราย, สิ้นหวัง" },
+  { word: "destroy", meaning: "ทำลาย" },
+  { word: "detect", meaning: "ค้นหา, ตรวจจับ" },
+  { word: "deteriorate", meaning: "ทำให้ทรุดโทรม, เสื่อมลง" },
+  { word: "determine", meaning: "กำหนด, ตัดสินใจแน่วแน่" },
+  { word: "develop", meaning: "พัฒนา, บุกเบิก" },
+  { word: "diagnosis", meaning: "วินิจฉัย" },
+  { word: "diminish", meaning: "ทำให้ลดลง" },
+  { word: "discipline", meaning: "ข้อบังคับ, ระเบียบวินัย" },
+  { word: "discriminate", meaning: "แบ่งแยก, ดูถูก" },
+  { word: "disease", meaning: "โรค" },
+  { word: "dismiss", meaning: "ไม่สนใจ, ปลดจากตำแหน่ง" },
+  { word: "dissolve", meaning: "ละลาย" },
+  { word: "distinct", meaning: "แตกต่าง, แยกกัน" },
+  { word: "distribute", meaning: "แจกจ่าย, เผยแพร่" },
+  { word: "diverse", meaning: "หลากหลาย, แตกต่าง" },
+  { word: "dominate", meaning: "ปกครอง, ครอบครอง" },
+  { word: "drought", meaning: "ความแห้งแล้ง" },
+  { word: "durable", meaning: "ทนทาน, ยั่งยืน" },
+  { word: "eager", meaning: "กระตือรือร้น" },
+  { word: "economy", meaning: "เศรษฐกิจ" },
+  { word: "effective", meaning: "ได้ผลดี, มีประสิทธิผล" },
+  { word: "efficient", meaning: "มีประสิทธิภาพ" },
+  { word: "elaborate", meaning: "ประณีต, ซับซ้อน" },
+  { word: "eliminate", meaning: "กำจัด" },
+  { word: "emerge", meaning: "ปรากฏออกมา" },
+  { word: "emphasis", meaning: "การเน้นย้ำ" },
+  { word: "encounter", meaning: "เผชิญหน้า, ประสบ" },
+  { word: "encourage", meaning: "ให้กำลังใจ, ส่งเสริม" },
+  { word: "endure", meaning: "อดทน, คงอยู่" },
+  { word: "enforce", meaning: "ใช้กำลังบังคับ" },
+  { word: "enhance", meaning: "ทำให้ดีเพิ่มขึ้น" },
+  { word: "enormous", meaning: "มหึมา, ใหญ่โต" },
+  { word: "enthusiastic", meaning: "กระตือรือร้น" },
+  { word: "environment", meaning: "สภาพแวดล้อม" },
+  { word: "erosion", meaning: "การกัดกร่อน" },
+  { word: "essential", meaning: "ที่จำเป็น, องค์ประกอบสำคัญ" },
+  { word: "establish", meaning: "สร้าง, ก่อตั้ง" },
+  { word: "evaluate", meaning: "ประเมินผล" },
+  { word: "evidence", meaning: "หลักฐาน" },
+  { word: "evolve", meaning: "ค่อย ๆ พัฒนา" },
+  { word: "exceed", meaning: "มากเกิน, มากกว่า" },
+  { word: "exploit", meaning: "แสวงหาผลประโยชน์, เอาเปรียบ" },
+  { word: "expose", meaning: "เปิดเผย, สัมผัส" },
+  { word: "extinct", meaning: "สูญพันธุ์" },
+  { word: "extraordinary", meaning: "พิเศษ, เกินธรรมดา" },
+  { word: "famine", meaning: "ภาวะข้าวยากหมากแพง" },
+  { word: "fascinate", meaning: "ลุ่มหลง, หลงเสน่ห์" },
+  { word: "flexible", meaning: "ยืดหยุ่น" },
+  { word: "flourish", meaning: "เจริญงอกงาม, เฟื่องฟู" },
+  { word: "fluctuate", meaning: "ผันผวน, ไม่คงที่" },
+  { word: "foundation", meaning: "รากฐาน, มูลนิธิ" },
+  { word: "frequently", meaning: "บ่อยๆ" },
+  { word: "fundamental", meaning: "พื้นฐาน, เป็นรากฐาน" },
+  { word: "generate", meaning: "สร้างขึ้น, กำเนิด" },
+  { word: "generous", meaning: "มีน้ำใจ, ใจกว้าง" },
+  { word: "genetic", meaning: "เกี่ยวกับพันธุกรรม" },
+  { word: "grateful", meaning: "ปลื้มปิติ, กตัญญู" },
+  { word: "guarantee", meaning: "รับประกัน" },
+  { word: "habitat", meaning: "ถิ่นที่อยู่ของพืชหรือสัตว์" },
+  { word: "harmful", meaning: "ที่อันตราย, ซึ่งให้โทษ" },
+  { word: "harmony", meaning: "ความสามัคคี, การประสานเสียง" },
+  { word: "heritage", meaning: "มรดก, ประเพณีตกทอด" },
+  { word: "hesitate", meaning: "ลังเล, ยับยั้ง" },
+  { word: "hostile", meaning: "เป็นปรปักษ์, เกลียดชัง" },
+  { word: "humiliate", meaning: "ทำให้ขายหน้า, ทำให้เสียเกียรติ" },
+  { word: "hypothesis", meaning: "สมมุติฐาน" },
+  { word: "immune", meaning: "ภูมิคุ้มกัน" },
+  { word: "impact", meaning: "ผลกระทบ" },
+  { word: "imply", meaning: "บอกเป็นนัย" },
+  { word: "impressive", meaning: "ประทับใจ" },
+  { word: "inevitable", meaning: "ซึ่งหลีกเลี่ยงไม่ได้" },
+  { word: "infect", meaning: "ติดเชื้อ, ทำให้ติดโรค" },
+  { word: "influence", meaning: "มีอิทธิพล" },
+  { word: "inhabit", meaning: "อยู่อาศัย" },
+  { word: "inhibit", meaning: "ยับยั้ง, ขัดขวาง" },
+  { word: "initiate", meaning: "ริเริ่ม" },
+  { word: "interpret", meaning: "แปล, ตีความ" },
+  { word: "invaluable", meaning: "ประมาณค่ามิได้" },
+  { word: "investigate", meaning: "สืบสวน, สำรวจ" },
+  { word: "jealous", meaning: "ที่อิจฉา, หึงหวง" },
+  { word: "justice", meaning: "ความยุติธรรม" },
+  { word: "justify", meaning: "อธิบาย, พิสูจน์ให้เห็น" },
+  { word: "keen", meaning: "กระตือรือร้น, เอาใจจดจ่อ" },
+  { word: "knowledge", meaning: "ความรู้" },
+  { word: "lack", meaning: "ขาด, ความขาดแคลน" },
+  { word: "legislate", meaning: "ออกกฎหมาย" },
+  { word: "liberty", meaning: "เสรีภาพ" },
+  { word: "logical", meaning: "มีเหตุผล" },
+  { word: "massive", meaning: "ใหญ่โต" },
+  { word: "mechanism", meaning: "กลไก" },
+  { word: "modify", meaning: "ดัดแปลง, ปรับปรุง" },
+  { word: "mortality", meaning: "การตาย, อัตราการตาย" },
+  { word: "motivate", meaning: "กระตุ้น" },
+  { word: "mutation", meaning: "การกลายพันธุ์" },
+  { word: "mysterious", meaning: "ลี้ลับ, ซับซ้อน" },
+  { word: "navigate", meaning: "หาเส้นทาง" },
+  { word: "neglect", meaning: "ไม่สนใจ, ละเลย" },
+  { word: "negotiate", meaning: "เจรจาต่อรอง" },
+  { word: "neutral", meaning: "ที่เป็นกลาง" },
+  { word: "nutrition", meaning: "โภชนาการ" },
+  { word: "obstacle", meaning: "อุปสรรค" },
+  { word: "obstruct", meaning: "ขัดขวาง, กีดขวาง" },
+  { word: "obvious", meaning: "ชัดเจน, เด่นชัด" },
+  { word: "optimistic", meaning: "ซึ่งมองโลกในแง่ดี" },
+  { word: "outstanding", meaning: "โดดเด่น, ที่ดีเยี่ยม" },
+  { word: "overcome", meaning: "เอาชนะ, มีชัย" },
+  { word: "participate", meaning: "มีส่วนร่วม, เข้าร่วม" },
+  { word: "patient", meaning: "คนป่วย, อดทน" },
+  { word: "penetrate", meaning: "แทรกซึม" },
+  { word: "perceive", meaning: "รับรู้" },
+  { word: "permanent", meaning: "ที่ถาวร" },
+  { word: "persuade", meaning: "ชักชวน, ทำให้เชื่อ" },
+  { word: "pessimistic", meaning: "ที่มองโลกในแง่ร้าย" },
+  { word: "phenomenon", meaning: "ปรากฏการณ์" },
+  { word: "pioneer", meaning: "ผู้บุกเบิก" },
+  { word: "policy", meaning: "นโยบาย" },
+  { word: "pollution", meaning: "ภาวะมลพิษ" },
+  { word: "potential", meaning: "ศักยภาพ" },
+  { word: "poverty", meaning: "ความยากจน" },
+  { word: "precious", meaning: "ล้ำค่า, เป็นที่รัก" },
+  { word: "precise", meaning: "ถูกต้อง, แม่นยำ" },
+  { word: "prejudice", meaning: "อคติ, ลำเอียง" },
+  { word: "preserve", meaning: "ถนอมไว้, รักษาไว้" },
+  { word: "prevent", meaning: "ป้องกัน, ขัดขวาง" },
+  { word: "priority", meaning: "สิทธิพิเศษ, ความสำคัญลำดับต้น" },
+  { word: "prohibit", meaning: "ห้าม" },
+  { word: "promote", meaning: "เลื่อนขั้น, สนับสนุน, ส่งเสริม" },
+  { word: "proportion", meaning: "สัดส่วน" },
+  { word: "prosperity", meaning: "ความเจริญรุ่งเรือง" },
+  { word: "provide", meaning: "จัดหาให้, ทำให้" },
+  { word: "provoke", meaning: "กระตุ้น, ยั่วยุอารมณ์" },
+  { word: "psychology", meaning: "จิตวิทยา" },
+  { word: "punctual", meaning: "ตรงต่อเวลา" },
+  { word: "purpose", meaning: "จุดมุ่งหมาย" },
+  { word: "pursue", meaning: "ไล่ตาม" },
+  { word: "rational", meaning: "มีเหตุผล" },
+  { word: "realize", meaning: "ตระหนัก, นึกได้" },
+  { word: "recover", meaning: "ฟื้นตัว, ได้คืน" },
+  { word: "reduce", meaning: "ลดลง" },
+  { word: "reform", meaning: "ปฏิรูป, เปลี่ยนรูปร่างใหม่" },
+  { word: "regulate", meaning: "ควบคุม, วางระเบียบ" },
+  { word: "reluctant", meaning: "อึกอัก, ไม่เต็มใจ" },
+  { word: "remarkable", meaning: "โดดเด่น, น่าสังเกต" },
+  { word: "remedy", meaning: "การรักษา, เยียวยารักษา" },
+  { word: "renovation", meaning: "การบูรณะ" },
+  { word: "rescue", meaning: "ช่วยชีวิต" },
+  { word: "resist", meaning: "ต่อต้าน, ต้านทาน" },
+  { word: "resolve", meaning: "แก้ปัญหา, ตัดสินใจ" },
+  { word: "resource", meaning: "ทรัพยากร" },
+  { word: "responsibility", meaning: "ความรับผิดชอบ" },
+  { word: "restrict", meaning: "จำกัด" },
+  { word: "reveal", meaning: "เปิดเผย, แสดงให้เห็น" },
+  { word: "revolution", meaning: "การปฏิวัติ" },
+  { word: "rigid", meaning: "แข็ง, ไม่ยืดหยุ่น" },
+  { word: "routine", meaning: "กิจวัตรประจำ" },
+  { word: "sacrifice", meaning: "เสียสละ" },
+  { word: "scarce", meaning: "ขาดแคลน, หายาก" },
+  { word: "significant", meaning: "สำคัญ, มีความหมาย" },
+  { word: "skeptical", meaning: "ขี้สงสัย, ไม่เชื่อ" },
+  { word: "solution", meaning: "วิธีแก้ปัญหา" },
+  { word: "spontaneous", meaning: "ซึ่งเป็นไปตามธรรมชาติ" },
+  { word: "stability", meaning: "ความมั่นคง, เสถียรภาพ" },
+  { word: "stimulate", meaning: "กระตุ้น, เร้าใจ" },
+  { word: "strategy", meaning: "กลยุทธ์" },
+  { word: "struggle", meaning: "ดิ้นรน, ต่อสู้" },
+  { word: "stubborn", meaning: "ดื้อรั้น, ดันทุรัง" },
+  { word: "substance", meaning: "สสาร, เนื้อหาสาระ" },
+  { word: "suffer", meaning: "ทุกข์ทรมาน" },
+  { word: "suitable", meaning: "เหมาะสม, สมควร" },
+  { word: "supervise", meaning: "ตรวจตรา, ดูแล, ควบคุม" },
+  { word: "survive", meaning: "มีชีวิตอยู่, อยู่รอด" },
+  { word: "suspect", meaning: "สงสัย, ระแวง" },
+  { word: "sustain", meaning: "รักษาไว้อย่างยั่งยืน" },
+  { word: "sympathy", meaning: "ความเห็นอกเห็นใจ" },
+  { word: "symptom", meaning: "อาการ" },
+  { word: "tendency", meaning: "ความโน้มเอียง, แนวโน้ม" },
+  { word: "tension", meaning: "ความเครียด" },
+  { word: "territory", meaning: "เขตแดน, อาณาเขต" },
+  { word: "theory", meaning: "ทฤษฎี" },
+  { word: "threaten", meaning: "คุกคาม, ข่มขู่" },
+  { word: "toxic", meaning: "มีพิษ, เป็นพิษ" },
+  { word: "tradition", meaning: "ธรรมเนียม, จารีต, ประเพณี" },
+  { word: "transform", meaning: "เปลี่ยนแปลง" },
+  { word: "transmit", meaning: "ถ่ายทอด, ส่งผ่าน" },
+  { word: "ultimately", meaning: "ท้ายที่สุด" },
+  { word: "unique", meaning: "ที่เป็นเอกลักษณ์" },
+  { word: "urgent", meaning: "เร่งรีบ, เร่งด่วน" },
+  { word: "valuable", meaning: "มีคุณค่า, มีราคา" },
+  { word: "variable", meaning: "ตัวแปร, ซึ่งเปลี่ยนแปลงได้" },
+  { word: "victim", meaning: "เหยื่อ, ผู้เคราะห์ร้าย" },
+  { word: "vigorous", meaning: "แข็งแรง, กระฉับกระเฉง" },
+  { word: "violate", meaning: "ฝ่าฝืน, ละเมิด" },
+  { word: "violence", meaning: "ความรุนแรง" },
+  { word: "visible", meaning: "ที่สามารถมองเห็นได้" },
+  { word: "vivid", meaning: "เจิดจ้า, มีชีวิตชีวา" },
+  { word: "volunteer", meaning: "อาสาสมัคร" },
+  { word: "vulnerable", meaning: "ที่อ่อนแอ, บาดเจ็บได้ง่าย" },
+  { word: "welfare", meaning: "สวัสดิการ, สังคมสงเคราะห์" },
+  { word: "widespread", meaning: "แพร่หลาย, ขยายออก" },
+  { word: "wisdom", meaning: "ภูมิปัญญา" },
+  { word: "withdraw", meaning: "ถอนออก, ถอนคำพูด" },
+  { word: "withstand", meaning: "ต้านทาน, ต่อต้าน, อดทนต่อ" },
+  { word: "witness", meaning: "พยาน" },
+  { word: "yearn", meaning: "ปรารถนา" },
+  { word: "yield", meaning: "การยินยอม, ประโยชน์ที่ได้รับ" },
+  { word: "zealous", meaning: "กระตือรือร้น, ขยันขันแข็ง" },
+  { word: "zenith", meaning: "ยอดสูงสุด, จุดสุดยอด" }
+];
+
+// ════════════════════════════════════════════
+//  STORAGE HELPERS
+// ════════════════════════════════════════════
+const STORE_KEY = 'gatpat_v2';
+
+function loadStore() {
+  try { return JSON.parse(localStorage.getItem(STORE_KEY)) || {}; } catch { return {}; }
+}
+function saveStore(data) {
+  localStorage.setItem(STORE_KEY, JSON.stringify(data));
+}
+function getTodayKey() {
+  return new Date().toISOString().slice(0, 10); // "2025-07-04"
+}
+
+// ════════════════════════════════════════════
+//  DAILY WORD SELECTION (seeded by date)
+// ════════════════════════════════════════════
+function seededShuffle(arr, seed) {
+  const a = [...arr];
+  let s = seed;
+  for (let i = a.length - 1; i > 0; i--) {
+    s = (s * 1664525 + 1013904223) & 0xffffffff;
+    const j = Math.abs(s) % (i + 1);
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+function dateSeed(dateKey) {
+  return dateKey.replace(/-/g, '').split('').reduce((acc, c) => acc * 31 + c.charCodeAt(0), 0);
+}
+function getDailyWords(dateKey) {
+  const seed = dateSeed(dateKey);
+  return seededShuffle(allWords, seed).slice(0, 30);
+}
+
+// ════════════════════════════════════════════
+//  STATE
+// ════════════════════════════════════════════
+let todayKey, dailyWords, currentIdx, score, correct, wrong, mistakes, sessionDone;
+
+function initSession() {
+  todayKey = getTodayKey();
+  dailyWords = getDailyWords(todayKey);
+  currentIdx = 0;
+  score = 0;
+  correct = 0;
+  wrong = 0;
+  mistakes = [];
+  sessionDone = false;
+
+  const store = loadStore();
+  if (store[todayKey] && store[todayKey].done) {
+    sessionDone = true;
+    const rec = store[todayKey];
+    score = rec.score;
+    correct = rec.correct;
+    wrong = rec.wrong;
+    mistakes = rec.mistakes || [];
+  }
+}
+
+// ════════════════════════════════════════════
+//  UI UPDATES
+// ════════════════════════════════════════════
+function updateDateBadge() {
+  const d = new Date();
+  const days = ['อาทิตย์','จันทร์','อังคาร','พุธ','พฤหัสบดี','ศุกร์','เสาร์'];
+  document.getElementById('dateBadge').textContent =
+    `📅 วัน${days[d.getDay()]} ${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()+543}`;
+}
+
+function updateScoreUI() {
+  document.getElementById('scoreDisplay').textContent = score;
+  document.getElementById('correctCount').textContent = correct;
+  document.getElementById('wrongCount').textContent = wrong;
+  const done = correct + wrong;
+  const pct = done ? Math.round(correct/done*100) : 0;
+  document.getElementById('progressBar').style.width = (done/30*100) + '%';
+  document.getElementById('progressLabel').textContent = `คำที่ ${done} / 30`;
+  document.getElementById('accuracyLabel').textContent = done ? `ความแม่นยำ ${pct}%` : 'ความแม่นยำ —';
+  document.getElementById('wordNumber').textContent = `WORD ${done+1} / 30`;
+}
+
+// ════════════════════════════════════════════
+//  QUIZ LOGIC
+// ════════════════════════════════════════════
+function showWord() {
+  const word = dailyWords[currentIdx];
+  document.getElementById('wordDisplay').textContent = word.word;
+  document.getElementById('phonetic').textContent = '';
+  renderOptions(word);
+}
+
+function renderOptions(word) {
+  const box = document.getElementById('optionsBox');
+  box.innerHTML = '';
+  let opts = [word.meaning];
+  // Random จริงๆ ทุกครั้ง
+  const pool = allWords.filter(w => w.meaning !== word.meaning)
+    .sort(() => Math.random() - 0.5);
+  for (let i = 0; i < 3; i++) opts.push(pool[i].meaning);
+  opts.sort(() => Math.random() - 0.5);
+  opts.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.textContent = opt;
+    btn.onclick = () => checkAnswer(opt, btn, word);
+    box.appendChild(btn);
+  });
+}
+
+function checkAnswer(selected, btn, word) {
+  document.querySelectorAll('.option').forEach(b => b.onclick = null);
+  // แสดงเฉลยทุกข้อ (ไฮไลท์ถูกเสมอ)
+  document.querySelectorAll('.option').forEach(b => {
+    if (b.textContent === word.meaning) b.classList.add('correct');
+  });
+  if (selected === word.meaning) {
+    score += 10;
+    correct++;
+    showToast(`✓ ถูกต้อง! +10  👉 ${word.meaning}`, 'correct-toast');
+  } else {
+    btn.classList.add('wrong');
+    wrong++;
+    mistakes.push({ word: word.word, meaning: word.meaning, selected });
+    showToast(`✗ ผิด! คำตอบ: ${word.meaning}`, 'wrong-toast');
+  }
+  updateScoreUI();
+  setTimeout(() => {
+    currentIdx++;
+    if (currentIdx >= 30) finishSession();
+    else showWord();
+  }, 1400);
+}
+
+function skipWord() {
+  wrong++;
+  const word = dailyWords[currentIdx];
+  mistakes.push({ word: word.word, meaning: word.meaning, selected: '(ข้าม)' });
+  updateScoreUI();
+  currentIdx++;
+  if (currentIdx >= 30) finishSession();
+  else showWord();
+}
+
+function finishSession() {
+  sessionDone = true;
+  // save to localStorage
+  const store = loadStore();
+  const pct = Math.round(correct/30*100);
+  store[todayKey] = { score, correct, wrong, mistakes, pct, done: true, date: todayKey };
+  saveStore(store);
+
+  document.getElementById('quizCard').style.display = 'none';
+  document.getElementById('resultScreen').style.display = 'block';
+  document.getElementById('progressBar').style.width = '100%';
+  document.getElementById('progressLabel').textContent = 'คำที่ 30 / 30';
+  document.getElementById('accuracyLabel').textContent = `ความแม่นยำ ${pct}%`;
+
+  const emojis = pct >= 90 ? '🏆' : pct >= 70 ? '🎉' : pct >= 50 ? '💪' : '📚';
+  const titles = pct >= 90 ? 'ยอดเยี่ยมมาก!' : pct >= 70 ? 'ทำได้ดีมาก!' : pct >= 50 ? 'พยายามต่อไป!' : 'ต้องฝึกเพิ่มนะ!';
+  document.getElementById('resultEmoji').textContent = emojis;
+  document.getElementById('resultTitle').textContent = titles;
+  document.getElementById('resultScore').textContent = score + ' คะแนน';
+  document.getElementById('resultSub').textContent = `ถูก ${correct} / ผิด ${wrong} จาก 30 คำ`;
+}
+
+function replayToday() {
+  if (!confirm('เล่นซ้ำวันนี้? คะแนนเดิมจะถูกแทนที่')) return;
+  // ล้างข้อมูลวันนี้
+  const store = loadStore();
+  delete store[todayKey];
+  saveStore(store);
+  // รีเซ็ต
+  currentIdx = 0; score = 0; correct = 0; wrong = 0; mistakes = []; sessionDone = false;
+  document.getElementById('finishBanner').classList.remove('show');
+  document.getElementById('resultScreen').style.display = 'none';
+  document.getElementById('mistakesList').style.display = 'none';
+  document.getElementById('quizCard').style.display = 'block';
+  updateScoreUI();
+  showWord();
+}
+
+function shareToLine() {
+  const pct = Math.round(correct/30*100);
+  const rank = pct >= 90 ? 'S' : pct >= 70 ? 'A' : pct >= 50 ? 'B' : 'C';
+  const text = `📚 ผลฝึกคำศัพท์ GAT-PAT วันนี้\n\n`
+    + `📅 ${document.getElementById('dateBadge').textContent}\n`
+    + `✅ ถูก: ${correct} คำ\n`
+    + `❌ ผิด: ${wrong} คำ\n`
+    + `🎯 ความแม่นยำ: ${pct}%\n`
+    + `⭐ Rank: ${rank}\n`
+    + `💯 คะแนน: ${score} คะแนน`;
+  const url = 'https://social-plugins.line.me/lineit/share?url='
+    + encodeURIComponent('https://gatpat.app')
+    + '&text=' + encodeURIComponent(text);
+  window.open(url, '_blank');
+}
+
+function reviewMistakes() {
+  const el = document.getElementById('mistakesList');
+  const content = document.getElementById('mistakesContent');
+  if (el.style.display === 'none') {
+    el.style.display = 'block';
+    if (mistakes.length === 0) {
+      content.innerHTML = '<div style="text-align:center;color:var(--correct);padding:16px">ไม่มีคำที่ตอบผิดเลย! 🎉</div>';
+    } else {
+      content.innerHTML = mistakes.map(m => `
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:8px;">
+          <div style="font-family:'Space Mono',monospace;font-size:1rem;color:var(--text);font-weight:700;">${m.word}</div>
+          <div style="font-size:0.85rem;color:var(--correct);margin-top:4px;">✓ ${m.meaning}</div>
+          <div style="font-size:0.8rem;color:var(--wrong);margin-top:2px;">✗ คำตอบของคุณ: ${m.selected}</div>
+        </div>`).join('');
+    }
+  } else {
+    el.style.display = 'none';
+  }
+}
+
+// ════════════════════════════════════════════
+//  HISTORY
+// ════════════════════════════════════════════
+function renderHistory() {
+  const store = loadStore();
+  const entries = Object.values(store).filter(e => e.done).sort((a,b) => b.date.localeCompare(a.date));
+  const el = document.getElementById('historyList');
+  if (entries.length === 0) {
+    el.innerHTML = `<div class="empty-state"><div class="icon">📋</div><div>ยังไม่มีประวัติการทำ<br>เริ่มฝึกวันแรกได้เลย!</div></div>`;
+    return;
+  }
+  el.innerHTML = entries.map(e => {
+    const badge = e.pct >= 90 ? ['S', 'badge-s'] : e.pct >= 70 ? ['A', 'badge-a'] : e.pct >= 50 ? ['B', 'badge-b'] : ['C', 'badge-c'];
+    const d = new Date(e.date);
+    const dateStr = `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()+543}`;
+    return `
+      <div class="history-item">
+        <div>
+          <div class="history-date">${dateStr}</div>
+          <div class="history-name">วันละ 30 คำ</div>
+          <span class="history-badge ${badge[1]}">Rank ${badge[0]}</span>
+        </div>
+        <div class="history-right">
+          <div class="history-score">${e.score}</div>
+          <div class="history-detail">ถูก ${e.correct} / ${e.correct + e.wrong} • ${e.pct}%</div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function clearHistory() {
+  if (confirm('ล้างประวัติคะแนนทั้งหมด?')) {
+    localStorage.removeItem(STORE_KEY);
+    renderHistory();
+  }
+}
+
+// ════════════════════════════════════════════
+//  SPEECH
+// ════════════════════════════════════════════
+// โหลดรายชื่อเสียงไว้ล่วงหน้า (บางเบราว์เซอร์โหลดแบบ async)
+if ('speechSynthesis' in window) {
+  window.speechSynthesis.getVoices();
+  window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+}
+
+function speakEN(text) {
+  if (!('speechSynthesis' in window) || typeof SpeechSynthesisUtterance === 'undefined') {
+    showToast('⚠ อุปกรณ์/เบราว์เซอร์นี้ไม่รองรับการอ่านออกเสียง', 'wrong-toast');
+    return;
+  }
+  try {
+    window.speechSynthesis.cancel();
+    const doSpeak = () => {
+      const voices = window.speechSynthesis.getVoices();
+      const u = new SpeechSynthesisUtterance(text);
+      const en = voices.find(v => /en[-_]?US/i.test(v.lang)) || voices.find(v => /^en/i.test(v.lang));
+      if (en) u.voice = en;
+      u.lang = 'en-US';
+      u.rate = 0.85;
+      window.speechSynthesis.speak(u);
+    };
+    if (window.speechSynthesis.getVoices().length === 0) {
+      let spoken = false;
+      const once = () => { if (!spoken) { spoken = true; doSpeak(); } };
+      window.speechSynthesis.onvoiceschanged = once;
+      setTimeout(once, 300);
+    } else {
+      doSpeak();
+    }
+  } catch (e) {
+    showToast('⚠ เล่นเสียงไม่ได้', 'wrong-toast');
+  }
+}
+
+function speakWord() {
+  const word = dailyWords[currentIdx];
+  if (!word) return;
+  // 1) ในแอป Android ที่ติดตั้งปลั๊กอิน TextToSpeech
+  try {
+    const cap = window.Capacitor;
+    if (cap && cap.Plugins && cap.Plugins.TextToSpeech) {
+      cap.Plugins.TextToSpeech.speak({ text: word.word, lang: 'en-US', rate: 1.0 });
+      return;
+    }
+  } catch (e) {}
+  // 2) เบราว์เซอร์ / พรีวิว
+  speakEN(word.word);
+}
+
+// ════════════════════════════════════════════
+//  TOAST
+// ════════════════════════════════════════════
+let toastTimer;
+function showToast(msg, cls) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast ' + cls + ' show';
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 1800);
+}
+
+// ════════════════════════════════════════════
+//  TABS
+// ════════════════════════════════════════════
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', (tab==='quiz'&&i===0)||(tab==='history'&&i===1)));
+  document.getElementById('quizView').classList.toggle('active', tab === 'quiz');
+  document.getElementById('historyView').classList.toggle('active', tab === 'history');
+  if (tab === 'history') renderHistory();
+}
+
+// ════════════════════════════════════════════
+//  INIT
+// ════════════════════════════════════════════
+window.onload = () => {
+  updateDateBadge();
+  initSession();
+  updateScoreUI();
+
+  if (sessionDone) {
+    document.getElementById('finishBanner').classList.add('show');
+    document.getElementById('quizCard').style.display = 'none';
+    document.getElementById('resultScreen').style.display = 'block';
+    const pct = Math.round(correct/30*100);
+    const emojis = pct >= 90 ? '🏆' : pct >= 70 ? '🎉' : pct >= 50 ? '💪' : '📚';
+    document.getElementById('resultEmoji').textContent = emojis;
+    document.getElementById('resultTitle').textContent = 'ผลการทำวันนี้';
+    document.getElementById('resultScore').textContent = score + ' คะแนน';
+    document.getElementById('resultSub').textContent = `ถูก ${correct} / ผิด ${wrong} จาก 30 คำ`;
+    document.getElementById('progressBar').style.width = '100%';
+    document.getElementById('progressLabel').textContent = 'คำที่ 30 / 30';
+    document.getElementById('accuracyLabel').textContent = `ความแม่นยำ ${pct}%`;
+
+    // restore mistakes from store
+    const store = loadStore();
+    if (store[todayKey]) mistakes = store[todayKey].mistakes || [];
+  } else {
+    showWord();
+  }
+};
+</script>
+</body>
+</html>

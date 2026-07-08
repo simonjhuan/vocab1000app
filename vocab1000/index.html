@@ -1,0 +1,1670 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ศัพท์อังกฤษ ม.ต้น 1000 คำ</title>
+<script src="../capacitor.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0d0d14;
+  --surface: #16161f;
+  --surface2: #1e1e2e;
+  --accent: #7c6af7;
+  --accent2: #f76a8c;
+  --accent3: #6af7c8;
+  --text: #e8e8f0;
+  --text2: #8888aa;
+  --correct: #6af7c8;
+  --wrong: #f76a8c;
+  --border: rgba(255,255,255,0.07);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Kanit', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(124,106,247,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(124,106,247,0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 0;
+}
+.app { position: relative; z-index: 1; max-width: 720px; margin: 0 auto; padding: 24px 16px 60px; }
+header { text-align: center; padding: 32px 0 28px; }
+.logo {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.25em;
+  color: var(--accent);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+h1 {
+  font-size: 2.2rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1.2;
+}
+.subtitle { font-size: 0.9rem; color: var(--text2); margin-top: 8px; font-weight: 300; }
+.date-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 50px;
+  padding: 6px 16px;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--accent3);
+  margin: 12px auto 0;
+}
+.tabs {
+  display: flex;
+  gap: 4px;
+  background: var(--surface);
+  border-radius: 14px;
+  padding: 5px;
+  margin-bottom: 24px;
+  border: 1px solid var(--border);
+}
+.tab {
+  flex: 1;
+  padding: 10px;
+  text-align: center;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text2);
+  transition: all 0.2s;
+  border: none;
+  background: transparent;
+}
+.tab.active { background: var(--accent); color: white; font-weight: 600; }
+.progress-wrap {
+  background: var(--surface2);
+  border-radius: 50px;
+  height: 6px;
+  margin-bottom: 20px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  border-radius: 50px;
+  transition: width 0.4s ease;
+}
+.progress-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  color: var(--text2);
+  margin-bottom: 8px;
+  font-family: 'Space Mono', monospace;
+}
+.score-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+.score-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px;
+  text-align: center;
+}
+.score-card .label { font-size: 0.7rem; color: var(--text2); text-transform: uppercase; letter-spacing: 0.1em; }
+.score-card .value { font-family: 'Space Mono', monospace; font-size: 1.6rem; font-weight: 700; margin-top: 4px; }
+.score-card.accent .value { color: var(--accent); }
+.score-card.correct .value { color: var(--correct); }
+.score-card.wrong .value { color: var(--wrong); }
+.quiz-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 32px 24px 28px;
+  margin-bottom: 20px;
+  position: relative;
+  overflow: hidden;
+}
+.quiz-card::before {
+  content: '';
+  position: absolute;
+  top: -40px; right: -40px;
+  width: 120px; height: 120px;
+  background: radial-gradient(circle, rgba(124,106,247,0.12), transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+.word-number {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--text2);
+  letter-spacing: 0.1em;
+  margin-bottom: 16px;
+}
+.word-display {
+  font-family: 'Space Mono', monospace;
+  font-size: 2.6rem;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+  line-height: 1.2;
+}
+.phonetic { font-size: 0.95rem; color: var(--accent3); margin-bottom: 24px; min-height: 20px; }
+.options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.option {
+  background: var(--surface2);
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 12px;
+  font-size: 0.95rem;
+  font-weight: 400;
+  cursor: pointer;
+  transition: all 0.18s;
+  text-align: center;
+  color: var(--text);
+  line-height: 1.4;
+}
+.option:hover { border-color: var(--accent); transform: translateY(-2px); background: rgba(124,106,247,0.08); }
+.option.correct { border-color: var(--correct); background: rgba(106,247,200,0.1); color: var(--correct); }
+.option.wrong { border-color: var(--wrong); background: rgba(247,106,140,0.1); color: var(--wrong); }
+.option:disabled { pointer-events: none; }
+.btn-row { display: flex; gap: 10px; margin-top: 20px; }
+.btn {
+  flex: 1;
+  padding: 13px;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  font-family: 'Kanit', sans-serif;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.18s;
+}
+.btn-primary { background: var(--accent); color: white; }
+.btn-primary:hover { background: #6a58e0; transform: translateY(-2px); }
+.btn-ghost { background: transparent; border-color: var(--border); color: var(--text2); }
+.btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+.result-screen {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 40px 24px;
+  text-align: center;
+}
+.result-emoji { font-size: 3.5rem; margin-bottom: 16px; }
+.result-title { font-size: 1.6rem; font-weight: 700; margin-bottom: 8px; }
+.result-score {
+  font-family: 'Space Mono', monospace;
+  font-size: 3rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--accent), var(--accent3));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 16px 0;
+}
+.result-sub { color: var(--text2); font-size: 0.9rem; margin-bottom: 28px; }
+.history-list { display: flex; flex-direction: column; gap: 10px; }
+.history-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: border-color 0.2s;
+}
+.history-item:hover { border-color: rgba(124,106,247,0.3); }
+.history-date { font-family: 'Space Mono', monospace; font-size: 0.8rem; color: var(--text2); }
+.history-name { font-size: 1rem; font-weight: 500; margin-top: 2px; }
+.history-right { text-align: right; }
+.history-score { font-family: 'Space Mono', monospace; font-size: 1.3rem; font-weight: 700; color: var(--accent); }
+.history-detail { font-size: 0.75rem; color: var(--text2); margin-top: 2px; }
+.history-badge { display: inline-block; padding: 2px 8px; border-radius: 50px; font-size: 0.7rem; font-weight: 600; margin-top: 4px; }
+.badge-s { background: rgba(106,247,200,0.15); color: var(--correct); }
+.badge-a { background: rgba(124,106,247,0.15); color: var(--accent); }
+.badge-b { background: rgba(247,200,106,0.15); color: #f7c86a; }
+.badge-c { background: rgba(247,106,140,0.15); color: var(--wrong); }
+.empty-state { text-align: center; padding: 60px 0; color: var(--text2); }
+.empty-state .icon { font-size: 3rem; margin-bottom: 12px; }
+.finish-banner {
+  background: linear-gradient(135deg, rgba(124,106,247,0.2), rgba(247,106,140,0.1));
+  border: 1px solid rgba(124,106,247,0.3);
+  border-radius: 14px;
+  padding: 16px 20px;
+  text-align: center;
+  margin-bottom: 20px;
+  display: none;
+}
+.finish-banner.show { display: block; }
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 24px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  z-index: 999;
+  white-space: nowrap;
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+.toast.correct-toast { border-color: var(--correct); color: var(--correct); }
+.toast.wrong-toast { border-color: var(--wrong); color: var(--wrong); }
+.view { display: none; }
+.view.active { display: block; }
+@media (max-width: 480px) {
+  .word-display { font-size: 1.9rem; }
+  .options { grid-template-columns: 1fr; }
+  .score-row { grid-template-columns: 1fr 1fr 1fr; }
+  .score-card .value { font-size: 1.2rem; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="logo">✦ ภาษาอังกฤษ ม.ต้น ✦</div>
+    <h1>คำศัพท์ ม.ต้น</h1>
+    <p class="subtitle">1,000 คำ • วันละ 30 คำ • พร้อมคำอ่าน • บันทึกคะแนนอัตโนมัติ</p>
+    <div class="date-badge" id="dateBadge">📅 —</div>
+  </header>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('quiz')">🎯 ฝึกวันนี้</button>
+    <button class="tab" onclick="switchTab('history')">📊 ประวัติคะแนน</button>
+  </div>
+
+  <div id="quizView" class="view active">
+    <div class="finish-banner" id="finishBanner">
+      🎉 ทำครบ 30 คำวันนี้แล้ว! มาใหม่พรุ่งนี้นะครับ
+    </div>
+
+    <div class="progress-label">
+      <span id="progressLabel">คำที่ 0 / 30</span>
+      <span id="accuracyLabel">ความแม่นยำ —</span>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-bar" id="progressBar" style="width:0%"></div>
+    </div>
+
+    <div class="score-row">
+      <div class="score-card accent">
+        <div class="label">คะแนน</div>
+        <div class="value" id="scoreDisplay">0</div>
+      </div>
+      <div class="score-card correct">
+        <div class="label">ถูก</div>
+        <div class="value" id="correctCount">0</div>
+      </div>
+      <div class="score-card wrong">
+        <div class="label">ผิด</div>
+        <div class="value" id="wrongCount">0</div>
+      </div>
+    </div>
+
+    <div class="quiz-card" id="quizCard">
+      <div class="word-number" id="wordNumber">WORD 1 / 30</div>
+      <div class="word-display" id="wordDisplay">—</div>
+      <div class="phonetic" id="phonetic"></div>
+      <div class="options" id="optionsBox"></div>
+      <div class="btn-row">
+        <button class="btn btn-ghost" onclick="speakWord()">🔊 ฟังเสียง</button>
+        <button class="btn btn-ghost" onclick="skipWord()">⏭ ข้ามคำนี้</button>
+      </div>
+    </div>
+
+    <div id="resultScreen" style="display:none;">
+      <div class="result-screen">
+        <div class="result-emoji" id="resultEmoji">🎉</div>
+        <div class="result-title" id="resultTitle">ยอดเยี่ยม!</div>
+        <div class="result-score" id="resultScore">300</div>
+        <div class="result-sub" id="resultSub">ถูก 0 / 30 คำ</div>
+        <button class="btn btn-primary" style="max-width:280px;margin:0 auto;display:block;margin-bottom:10px;" onclick="reviewMistakes()">📋 ดูคำที่ตอบผิด</button>
+        <button class="btn btn-ghost" style="max-width:280px;margin:0 auto;display:block;margin-bottom:10px;" onclick="replayToday()">🔄 เล่นซ้ำวันนี้</button>
+        <button class="btn btn-ghost" style="max-width:280px;margin:0 auto;display:block;" onclick="shareToLine()">💚 แชร์ผลให้ผู้ปกครอง</button>
+      </div>
+      <div id="mistakesList" style="margin-top:16px;display:none;">
+        <div style="font-weight:600;margin-bottom:10px;font-size:0.9rem;color:var(--text2);">คำที่ตอบผิด:</div>
+        <div id="mistakesContent"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="historyView" class="view">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+      <div style="font-weight:600;">ประวัติการทำข้อสอบ</div>
+      <button class="btn btn-ghost" style="flex:none;padding:8px 14px;font-size:0.8rem;" onclick="clearHistory()">🗑 ล้างข้อมูล</button>
+    </div>
+    <div id="historyList" class="history-list"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ════════════════════════════════════════════
+//  WORD LIST — ศัพท์อังกฤษ ม.ต้น 1,000 คำ
+//  { word, phon (คำอ่าน), meaning }
+// ════════════════════════════════════════════
+const allWords = [
+  { word: "Ability", phon: "อะบิลิตี", meaning: "ความสามารถ" },
+  { word: "Absent", phon: "แอบเซินท์", meaning: "ขาดเรียน, ไม่อยู่" },
+  { word: "Academy", phon: "อะแคมเดอมิ", meaning: "สถาบันการศึกษา" },
+  { word: "Accent", phon: "แอคเซนท์", meaning: "สำเนียง" },
+  { word: "Accept", phon: "แอคเซพท์", meaning: "ยอมรับ" },
+  { word: "Achieve", phon: "อะชีฟ", meaning: "บรรลุผลสำเร็จ" },
+  { word: "Activity", phon: "แอคทิวิตี", meaning: "กิจกรรม" },
+  { word: "Admission", phon: "แอดมิชชัน", meaning: "การรับเข้าศึกษา" },
+  { word: "Advanced", phon: "แอดวานซท์", meaning: "ขั้นสูง, ก้าวหน้า" },
+  { word: "Advice", phon: "แอดไวซฺ", meaning: "คำแนะนำ" },
+  { word: "Alphabet", phon: "แอลฟาเบท", meaning: "พยัญชนะ" },
+  { word: "Analyze", phon: "แอนนาไลซฺ", meaning: "วิเคราะห์" },
+  { word: "Answer", phon: "แอนเซอะ", meaning: "คำตอบ" },
+  { word: "Anxiety", phon: "แองไซะที", meaning: "ความวิตกกังวล" },
+  { word: "Application", phon: "แอปพลิเคชัน", meaning: "การสมัคร, ใบสมัคร" },
+  { word: "Appoint", phon: "อะพอยท์", meaning: "นัดหมาย" },
+  { word: "Argue", phon: "อาร์กิว", meaning: "โต้เถียง" },
+  { word: "Art", phon: "อาร์ท", meaning: "ศิลปะ" },
+  { word: "Assignment", phon: "อะไซน์เมนท์", meaning: "งานที่ได้รับมอบหมาย" },
+  { word: "Attend", phon: "อะเทนด์", meaning: "เข้าร่วม" },
+  { word: "Attitude", phon: "แอตทิจูด", meaning: "ทัศนคติ" },
+  { word: "Average", phon: "แอฟเวอเรจ", meaning: "ค่าเฉลี่ย" },
+  { word: "Behavior", phon: "บิเฮฟวิเออะ", meaning: "พฤติกรรม" },
+  { word: "Biology", phon: "ไบโอลอจี", meaning: "ชีววิทยา" },
+  { word: "Board", phon: "บอร์ด", meaning: "กระดาน" },
+  { word: "Book", phon: "บุค", meaning: "หนังสือ" },
+  { word: "Borrow", phon: "บอโรว์", meaning: "ขอยืม" },
+  { word: "Brain", phon: "เบรน", meaning: "สมอง" },
+  { word: "Calculator", phon: "แคลคิวเลเตอร์", meaning: "เครื่องคิดเลข" },
+  { word: "Campus", phon: "แคมพัส", meaning: "วิทยาเขต, บริเวณโรงเรียน" },
+  { word: "Cancel", phon: "แคนเซิล", meaning: "ยกเลิก" },
+  { word: "Certificate", phon: "เซอร์ทิฟิเคท", meaning: "ประกาศนียบัตร" },
+  { word: "Chapter", phon: "แชพเทอะ", meaning: "บทเรียน" },
+  { word: "Cheat", phon: "ชีท", meaning: "โกง, ทุจริต" },
+  { word: "Chemistry", phon: "เคมิสทรี", meaning: "เคมี" },
+  { word: "Classmate", phon: "คลาสเมท", meaning: "เพื่อนร่วมชั้น" },
+  { word: "Clerk", phon: "คลาร์ค / เคลอรก", meaning: "เสมียน, เจ้าหน้าที่" },
+  { word: "Clever", phon: "คลีเวอะ", meaning: "ฉลาด" },
+  { word: "Coach", phon: "โค้ช", meaning: "ผู้ฝึกสอน" },
+  { word: "College", phon: "คอลเลจ", meaning: "วิทยาลัย" },
+  { word: "Compare", phon: "คอมแพร์", meaning: "เปรียบเทียบ" },
+  { word: "Compass", phon: "คอมพัส", meaning: "เข็มทิศ, วงเวียน" },
+  { word: "Compulsory", phon: "คอมพัลซะรี", meaning: "เป็นการบังคับ (วิชาบังคับ)" },
+  { word: "Concentrate", phon: "คอนเซนเทรท", meaning: "มีสมาธิ, จดจ่อ" },
+  { word: "Conclusion", phon: "คอนคลูชัน", meaning: "สรุป" },
+  { word: "Conduct", phon: "คอนดัคท์", meaning: "ความประพฤติ, จัดทำ" },
+  { word: "Conference", phon: "คอนเฟอเรนซ์", meaning: "การประชุม" },
+  { word: "Congratulate", phon: "คอนแกรทชูเลท", meaning: "แสดงความยินดี" },
+  { word: "Copy", phon: "คอพพี", meaning: "คัดลอก, สำเนา" },
+  { word: "Correct", phon: "คอเรคท์", meaning: "ถูกต้อง" },
+  { word: "Course", phon: "คอร์ส", meaning: "หลักสูตร" },
+  { word: "Cram", phon: "แครม", meaning: "ติวเข้ม, อัดความรู้" },
+  { word: "Creative", phon: "ครีเอทีฟ", meaning: "สร้างสรรค์" },
+  { word: "Criterion", phon: "ไครทีเรียน", meaning: "เกณฑ์, บรรทัดฐาน" },
+  { word: "Curriculum", phon: "เคอริคิวลัม", meaning: "หลักสูตรการศึกษา" },
+  { word: "Deadline", phon: "เดดไลน์", meaning: "กำหนดส่งงาน" },
+  { word: "Degree", phon: "ดีกรี", meaning: "ปริญญา, ระดับ" },
+  { word: "Department", phon: "ดีพาร์ทเมนท์", meaning: "แผนก, ภาควิชา" },
+  { word: "Describe", phon: "ดิสไครบ์", meaning: "อธิบาย, บรรยาย" },
+  { word: "Desk", phon: "เดสค์", meaning: "โต๊ะเรียน" },
+  { word: "Dictionary", phon: "ดิคชันนารี", meaning: "พจนานุกรม" },
+  { word: "Diploma", phon: "ดิพโลมา", meaning: "อนุปริญญา, ประกาศนียบัตร" },
+  { word: "Discuss", phon: "ดิสคัส", meaning: "สนทนา, ถกเถียง" },
+  { word: "Division", phon: "ดิวิชัน", meaning: "การแบ่ง, การหาร" },
+  { word: "Document", phon: "ดอคคิวเมนท์", meaning: "เอกสาร" },
+  { word: "Dormitory", phon: "ดอร์มิทอรี", meaning: "หอพัก" },
+  { word: "Draft", phon: "ดราฟท์", meaning: "ร่าง (ข้อความ)" },
+  { word: "Duty", phon: "ดูที", meaning: "หน้าที่" },
+  { word: "Education", phon: "เอดูเคชัน", meaning: "การศึกษา" },
+  { word: "Elementary", phon: "เอลิเมนทรี", meaning: "ประถมศึกษา, ขั้นต้น" },
+  { word: "Encyclopedia", phon: "เอนไซโคลพีเดีย", meaning: "สารานุกรม" },
+  { word: "English", phon: "อิงลิช", meaning: "ภาษาอังกฤษ" },
+  { word: "Enroll", phon: "เอนโรล", meaning: "ลงทะเบียนเรียน" },
+  { word: "Essay", phon: "เอสเซย์", meaning: "เรียงความ" },
+  { word: "Evaluation", phon: "อิวาลูเอชัน", meaning: "การประเมินผล" },
+  { word: "Exam", phon: "อิกแซม", meaning: "การสอบ" },
+  { word: "Example", phon: "อิกซามเพิล", meaning: "ตัวอย่าง" },
+  { word: "Exercise", phon: "เอคเซอะไซซฺ", meaning: "แบบฝึกหัด, ออกกำลังกาย" },
+  { word: "Experiment", phon: "อิกสเปริเมนท์", meaning: "การทดลอง" },
+  { word: "Expert", phon: "เอ็กซ์เพิร์ท", meaning: "ผู้เชี่ยวชาญ" },
+  { word: "Explain", phon: "อิกสเพลน", meaning: "อธิบาย" },
+  { word: "Fail", phon: "เฟล", meaning: "สอบตก, ล้มเหลว" },
+  { word: "Focus", phon: "โฟคัส", meaning: "จุดสนใจ, เพ่งความสนใจ" },
+  { word: "Formula", phon: "ฟอร์มูลา", meaning: "สูตร" },
+  { word: "Geography", phon: "จีออกราฟี", meaning: "ภูมิศาสตร์" },
+  { word: "Geometry", phon: "จีออมิเทรี", meaning: "เรขาคณิต" },
+  { word: "Grade", phon: "เกรด", meaning: "ระดับคะแนน, ชั้นปี" },
+  { word: "Graduate", phon: "แกรดจูเอท", meaning: "สำเร็จการศึกษา" },
+  { word: "Grammar", phon: "แกรมมะ", meaning: "ไวยากรณ์" },
+  { word: "History", phon: "ฮิสทรี", meaning: "ประวัติศาสตร์" },
+  { word: "Homework", phon: "โฮมเวิร์ค", meaning: "การบ้าน" },
+  { word: "Improve", phon: "อิมพรูฟ", meaning: "ปรับปรุง, พัฒนา" },
+  { word: "Institute", phon: "อินสทิทิวท์", meaning: "สถาบัน" },
+  { word: "Instruction", phon: "อินสทรัคชัน", meaning: "คำสั่ง, คำแนะนำ" },
+  { word: "Intelligence", phon: "อินเทลลิเจนซ์", meaning: "สติปัญญา, ความฉลาด" },
+  { word: "Knowledge", phon: "นอลเลจ", meaning: "ความรู้" },
+  { word: "Laboratory", phon: "แลบอราทอรี", meaning: "ห้องปฏิบัติการ (ห้องแล็บ)" },
+  { word: "Lecture", phon: "เลคเชอะ", meaning: "การบรรยาย" },
+  { word: "Lesson", phon: "เลสเซิน", meaning: "บทเรียน" },
+  { word: "Library", phon: "ไลบรารี", meaning: "ห้องสมุด" },
+  { word: "Alarm", phon: "อะลาร์ม", meaning: "นาฬิกาปลุก, สัญญาณเตือน" },
+  { word: "Awake", phon: "อะเวค", meaning: "ตื่นนอน, รู้ตัว" },
+  { word: "Bath", phon: "บาธ", meaning: "การอาบน้ำ (ในอ่าง)" },
+  { word: "Bedtime", phon: "เบดไทม์", meaning: "เวลาเข้านอน" },
+  { word: "Blanket", phon: "แบลงคิท", meaning: "ผ้าห่ม" },
+  { word: "Brush", phon: "บรัช", meaning: "แปรง (ฟัน/ผม)" },
+  { word: "Calendar", phon: "แคลินเดอะ", meaning: "ปฏิทิน" },
+  { word: "Calm", phon: "คาม", meaning: "สงบ" },
+  { word: "Chore", phon: "ชอร์", meaning: "งานบ้าน" },
+  { word: "Clean", phon: "คลีน", meaning: "ทำความสะอาด" },
+  { word: "Clock", phon: "คลอค", meaning: "นาฬิกา" },
+  { word: "Clothes", phon: "โคลธส์", meaning: "เสื้อผ้า" },
+  { word: "Comb", phon: "โคมบ์", meaning: "หวี" },
+  { word: "Comfortable", phon: "คัมฟะทะเบิล", meaning: "สบาย, สะดวกสบาย" },
+  { word: "Commute", phon: "คอมมิวท์", meaning: "การเดินทางไปกลับบ้านและที่ทำงาน" },
+  { word: "Curtain", phon: "เคอร์เทน", meaning: "ผ้าม่าน" },
+  { word: "Daily", phon: "เดลี", meaning: "ประจำวัน" },
+  { word: "Daytime", phon: "เดไทม์", meaning: "กลางวัน" },
+  { word: "Decorate", phon: "เดคคะเรท", meaning: "ตกแต่ง" },
+  { word: "Dinner", phon: "ดินเนอะ", meaning: "อาหารเย็น" },
+  { word: "Dirty", phon: "เดอร์ที", meaning: "สกปรก" },
+  { word: "Doze", phon: "โดซ", meaning: "งีบหลับ" },
+  { word: "Drawer", phon: "ดรอเออะ", meaning: "ลิ้นชัก" },
+  { word: "Dress", phon: "เดรส", meaning: "แต่งตัว, ชุดกระโปรง" },
+  { word: "Dust", phon: "ดัสท์", meaning: "ฝุ่น, ปัดฝุ่น" },
+  { word: "Early", phon: "เออรี", meaning: "แต่เช้า, ก่อนเวลา" },
+  { word: "Empty", phon: "เอมพที", meaning: "ว่างเปล่า" },
+  { word: "Evening", phon: "อีฟนิง", meaning: "ตอนเย็น" },
+  { word: "Everyday", phon: "เอฟรีเดย์", meaning: "ทุกวัน" },
+  { word: "Family", phon: "แฟมิลี", meaning: "ครอบครัว" },
+  { word: "Fast", phon: "ฟาสท์", meaning: "เร็ว" },
+  { word: "Feed", phon: "ฟีด", meaning: "ให้อาหาร" },
+  { word: "Floor", phon: "ฟลอร์", meaning: "พื้น" },
+  { word: "Fold", phon: "โฟลด์", meaning: "พับ (ผ้า)" },
+  { word: "Free time", phon: "ฟรี ไทม์", meaning: "เวลาว่าง" },
+  { word: "Friend", phon: "เฟรนด์", meaning: "เพื่อน" },
+  { word: "Furniture", phon: "เฟอร์นิเจอร์", meaning: "เครื่องเรือน" },
+  { word: "Garage", phon: "กะราจ / แกะราจ", meaning: "โรงรถ" },
+  { word: "Garden", phon: "การ์เดน", meaning: "สวน" },
+  { word: "Gather", phon: "แกเธอะ", meaning: "รวมตัว, รวบรวม" },
+  { word: "Glass", phon: "กลาส / แกลส", meaning: "แก้ว" },
+  { word: "Groom", phon: "กรูม", meaning: "แต่งตัว, ดูแลความสะอาดร่างกาย" },
+  { word: "Habit", phon: "แฮบิท", meaning: "นิสัย, กิจวัตร" },
+  { word: "Haircut", phon: "แฮร์คัท", meaning: "การตัดผม" },
+  { word: "Hanger", phon: "แฮงเออะ", meaning: "ไม้แขวนเสื้อ" },
+  { word: "Healthy", phon: "เฮลธี", meaning: "รักสุขภาพ, แข็งแรง" },
+  { word: "Hobby", phon: "ฮอบบี", meaning: "งานอดิเรก" },
+  { word: "Home", phon: "โฮม", meaning: "บ้าน" },
+  { word: "Household", phon: "เฮาส์โฮลด์", meaning: "ครัวเรือน" },
+  { word: "Hurry", phon: "เฮอรี", meaning: "รีบเร่ง" },
+  { word: "Iron", phon: "ไอเอิร์น", meaning: "เตารีด, รีดผ้า" },
+  { word: "Key", phon: "คีย์", meaning: "กุญแจ" },
+  { word: "Kitchen", phon: "คิทเชน", meaning: "ห้องครัว" },
+  { word: "Late", phon: "เลท", meaning: "สาย, ดึก" },
+  { word: "Laundry", phon: "ลอนดรี", meaning: "การซักรีด, เสื้อผ้าที่จะซัก" },
+  { word: "Lawn", phon: "ลอน", meaning: "สนามหญ้า" },
+  { word: "Living room", phon: "ลิฟวิง รูม", meaning: "ห้องนั่งเล่น" },
+  { word: "Lock", phon: "ลอค", meaning: "ล็อค, ใส่กุญแจ" },
+  { word: "Lunch", phon: "ลันช์", meaning: "อาหารกลางวัน" },
+  { word: "Magazine", phon: "แมกกาซีน", meaning: "นิตยสาร" },
+  { word: "Mirror", phon: "มิเรอะ", meaning: "กระจกเงา" },
+  { word: "Mop", phon: "มอพ", meaning: "ไม้ถูพื้น, ถูพื้น" },
+  { word: "Morning", phon: "มอร์นิง", meaning: "ตอนเช้า" },
+  { word: "Nap", phon: "แนพ", meaning: "งีบหลับสั้นๆ" },
+  { word: "Neighbor", phon: "เนเบอะ", meaning: "เพื่อนบ้าน" },
+  { word: "Newspaper", phon: "นิวน์เปเพอะ", meaning: "หนังสือพิมพ์" },
+  { word: "Night", phon: "ไนท์", meaning: "กลางคืน" },
+  { word: "Normal", phon: "นอร์มอล", meaning: "ปกติ" },
+  { word: "Organize", phon: "ออร์แกไนซฺ", meaning: "จัดระเบียบ" },
+  { word: "Pajamas", phon: "พะจามาส", meaning: "ชุดนอน" },
+  { word: "Pet", phon: "เพ็ท", meaning: "สัตว์เลี้ยง" },
+  { word: "Pillow", phon: "พิลโลว์", meaning: "หมอน" },
+  { word: "Plan", phon: "แพลน", meaning: "วางแผน" },
+  { word: "Prepare", phon: "พริแพร์", meaning: "เตรียมตัว" },
+  { word: "Quiet", phon: "ไควเอท", meaning: "เงียบ" },
+  { word: "Radio", phon: "เรดิโอ", meaning: "วิทยุ" },
+  { word: "Read", phon: "รีด", meaning: "อ่าน" },
+  { word: "Relax", phon: "รีแลกซ์", meaning: "ผ่อนคลาย" },
+  { word: "Repair", phon: "รีแพร์", meaning: "ซ่อมแซม" },
+  { word: "Routine", phon: "รูทีน", meaning: "กิจวัตรประจำวัน" },
+  { word: "Rubbish", phon: "รับบิช", meaning: "ขยะ" },
+  { word: "Schedule", phon: "สเกดจูล", meaning: "ตารางเวลา" },
+  { word: "Scrub", phon: "สครับ", meaning: "ขัดถูอย่างแรง" },
+  { word: "Shampoo", phon: "แชมพู", meaning: "ยาสระผม" },
+  { word: "Shave", phon: "เชฟ", meaning: "โกน (หนวด/เครา)" },
+  { word: "Shower", phon: "ชาวเออะ", meaning: "อาบน้ำ (ฝักบัว)" },
+  { word: "Sink", phon: "ซิงค์", meaning: "อ่างล้างจาน/อ่างล้างหน้า" },
+  { word: "Sleep", phon: "สลีพ", meaning: "นอนหลับ" },
+  { word: "Soap", phon: "โซพ", meaning: "สบู่" },
+  { word: "Spend", phon: "สเปนด์", meaning: "ใช้เวลา, ใช้เงิน" },
+  { word: "Sponge", phon: "สปันจ์", meaning: "ฟองน้ำ" },
+  { word: "Sweep", phon: "สวีพ", meaning: "กวาด" },
+  { word: "Tidy", phon: "ไทดีย์", meaning: "สะอาดเรียบร้อย" },
+  { word: "Time", phon: "ไทม์", meaning: "เวลา" },
+  { word: "Towel", phon: "ทาวเอล", meaning: "ผ้าขนหนู" },
+  { word: "Trash", phon: "แทรช", meaning: "ขยะ" },
+  { word: "Vacuum", phon: "แวคคิวอัม", meaning: "ดูดฝุ่น (ด้วยเครื่อง)" },
+  { word: "Wake", phon: "เวก", meaning: "ตื่น" },
+  { word: "Wash", phon: "วอช", meaning: "ซัก, ล้าง" },
+  { word: "Window", phon: "วินโดว์", meaning: "หน้าต่าง" },
+  { word: "Active", phon: "แอคทิฟ", meaning: "กระตือรือร้น" },
+  { word: "Afraid", phon: "อะเฟรด", meaning: "กลัว" },
+  { word: "Aggressive", phon: "อะเกรสซิฟ", meaning: "ก้าวร้าว" },
+  { word: "Ambitious", phon: "แอมบิเชียส", meaning: "ทะเยอทะยาน" },
+  { word: "Amused", phon: "อะมิวส์ด", meaning: "สนุกสนาน, ขบขัน" },
+  { word: "Angry", phon: "แองกรี", meaning: "โกรธ" },
+  { word: "Annoyed", phon: "อะนอยด์", meaning: "รำคาญ" },
+  { word: "Anxious", phon: "แองเชียส", meaning: "วิตกกังวล" },
+  { word: "Arrogant", phon: "แอระแกนท์", meaning: "หยิ่งยโส" },
+  { word: "Ashamed", phon: "อะเชมด์", meaning: "ละอายใจ" },
+  { word: "Bad-tempered", phon: "แบด เทมเปอร์ด", meaning: "อารมณ์เสีย, หงุดหงิดง่าย" },
+  { word: "Beautiful", phon: "บิวทิฟุล", meaning: "สวย" },
+  { word: "Bored", phon: "บอร์ด", meaning: "เบื่อ" },
+  { word: "Brave", phon: "เบรฟ", meaning: "กล้าหาญ" },
+  { word: "Bright", phon: "ไบรท์", meaning: "ฉลาด, สดใส" },
+  { word: "Calm", phon: "คาม", meaning: "สงบ, ใจเย็น" },
+  { word: "Careful", phon: "แครฟุล", meaning: "ระมัดระวัง" },
+  { word: "Careless", phon: "แครเลส", meaning: "ประมาท, เลินเล่อ" },
+  { word: "Charming", phon: "ชาร์มมิง", meaning: "มีเสน่ห์" },
+  { word: "Cheerful", phon: "เชียร์ฟุล", meaning: "ร่าเริง, สดใส" },
+  { word: "Clumsy", phon: "คลัมซี", meaning: "ซุ่มซ่าม" },
+  { word: "Confident", phon: "คอนฟิเดนท์", meaning: "มั่นใจ" },
+  { word: "Confused", phon: "คอนฟิวส์ด", meaning: "สับสน" },
+  { word: "Cruel", phon: "ครูเอล", meaning: "ใจร้าย, โหดร้าย" },
+  { word: "Curious", phon: "คิวเรียส", meaning: "อยากรู้อยากเห็น" },
+  { word: "Depressed", phon: "ดิเพรสท์", meaning: "เศร้าซึม, หดหู่" },
+  { word: "Disappointed", phon: "ดิสอะพอยท์เทด", meaning: "ผิดหวัง" },
+  { word: "Dishonest", phon: "ดิสออนเนสท์", meaning: "ไม่ซื่อสัตย์" },
+  { word: "Eager", phon: "อีเกอะ", meaning: "กระตือรือร้น, กระหายที่จะเรียนรู้" },
+  { word: "Easy-going", phon: "อีซี โกอิง", meaning: "ง่ายๆ สบายๆ" },
+  { word: "Embarrassed", phon: "เอ็มแบเริสท์", meaning: "อับอาย, ขัดเขิน" },
+  { word: "Emotional", phon: "อิมูชันนัล", meaning: "เจ้าอารมณ์, อ่อนไหวง่าย" },
+  { word: "Energetic", phon: "เอนเนอร์เจทิก", meaning: "มีพลังงานเยอะ, กระฉับกระเฉง" },
+  { word: "Envious", phon: "เอนเวียส", meaning: "อิจฉา" },
+  { word: "Excited", phon: "อิกไซเทด", meaning: "ตื่นเต้น" },
+  { word: "Exhausted", phon: "อิกซอทเทด", meaning: "เหนื่อยล้าอย่างมาก" },
+  { word: "Faithful", phon: "เฟธฟุล", meaning: "ซื่อสัตย์, ไว้ใจได้" },
+  { word: "Fearful", phon: "เฟียร์ฟุล", meaning: "หวาดกลัว" },
+  { word: "Friendly", phon: "เฟรนดลี", meaning: "เป็นมิตร" },
+  { word: "Frightened", phon: "ไฟรเทินด์", meaning: "ตกใจกลัว" },
+  { word: "Frustrated", phon: "ฟรัสเทรเทด", meaning: "หงุดหงิด, ขัดใจ" },
+  { word: "Generous", phon: "เจนเนอรัส", meaning: "ใจกว้าง, เอื้อเฟื้อ" },
+  { word: "Gentle", phon: "เจนเทิล", meaning: "สุภาพ, อ่อนโยน" },
+  { word: "Gloomy", phon: "กลูมี", meaning: "เศร้าหมอง" },
+  { word: "Greedy", phon: "กรีดี", meaning: "โลภ" },
+  { word: "Guilty", phon: "กิลที", meaning: "รู้สึกผิด" },
+  { word: "Handsome", phon: "แฮนด์ซัม", meaning: "หล่อ" },
+  { word: "Happy", phon: "แฮปพี", meaning: "มีความสุข" },
+  { word: "Hard-working", phon: "ฮาร์ด เวิร์กกิง", meaning: "ขยันทำงาน" },
+  { word: "Helpful", phon: "เฮลพ์ฟุล", meaning: "ชอบช่วยเหลือ" },
+  { word: "Honest", phon: "ออนเนสท์", meaning: "ซื่อสัตย์" },
+  { word: "Hopeful", phon: "โฮปฟุล", meaning: "มีความหวัง" },
+  { word: "Humble", phon: "ฮัมเบิล", meaning: "ถ่อมตัว" },
+  { word: "Impatient", phon: "อิมเพเชนท์", meaning: "ใจร้อน, ไม่อดทน" },
+  { word: "Insecure", phon: "อินสิคิวม์", meaning: "ไม่มั่นใจในตัวเอง" },
+  { word: "Intelligent", phon: "อินเทลลิเจนท์", meaning: "ฉลาดหลักแหลม" },
+  { word: "Jealous", phon: "เจลัส", meaning: "หึงหวง, อิจฉา" },
+  { word: "Kind", phon: "ไคนด์", meaning: "ใจดี" },
+  { word: "Lazy", phon: "เลซี", meaning: "ขี้เกียจ" },
+  { word: "Lonely", phon: "โลนลี", meaning: "เหงา" },
+  { word: "Lively", phon: "ไลฟลี", meaning: "มีชีวิตชีวา" },
+  { word: "Loyal", phon: "ลอยัล", meaning: "จงรักภักดี" },
+  { word: "Mean", phon: "มีน", meaning: "ใจร้าย, ขี้เหนียว" },
+  { word: "Modest", phon: "มอเดสท์", meaning: "ถ่อมตัว" },
+  { word: "Moody", phon: "มูดี", meaning: "อารมณ์แปรปรวนง่าย" },
+  { word: "Nervous", phon: "เนอร์วัส", meaning: "ประหม่า, กังวล" },
+  { word: "Nice", phon: "ไนซ์", meaning: "ดี, สุภาพ" },
+  { word: "Optimistic", phon: "ออพทิมิสทิก", meaning: "มองโลกในแง่ดี" },
+  { word: "Patient", phon: "เพเชนท์", meaning: "อดทน" },
+  { word: "Pessimistic", phon: "เพสสิมิสทิก", meaning: "มองโลกในแง่ร้าย" },
+  { word: "Polite", phon: "พะไลท์", meaning: "สุภาพ" },
+  { word: "Proud", phon: "พราวด์", meaning: "ภูมิใจ" },
+  { word: "Reliable", phon: "รีลายอะเบิล", meaning: "พึ่งพาได้, ไว้ใจได้" },
+  { word: "Rude", phon: "รูด", meaning: "หยาบคาย" },
+  { word: "Sad", phon: "แซด", meaning: "เศร้า" },
+  { word: "Selfish", phon: "เซลฟิช", meaning: "เห็นแก่ตัว" },
+  { word: "Sensible", phon: "เซนสิเบิล", meaning: "มีเหตุผล" },
+  { word: "Sensitive", phon: "เซนสิทิฟ", meaning: "อ่อนไหวง่าย" },
+  { word: "Shy", phon: "ชาย", meaning: "ขี้อาย" },
+  { word: "Silly", phon: "ซิลลี", meaning: "งี่เง่า, ไร้สาระ" },
+  { word: "Sincere", phon: "ซินเซียร์", meaning: "จริงใจ" },
+  { word: "Smart", phon: "สมาร์ท", meaning: "ฉลาด, ดูดี" },
+  { word: "Strict", phon: "สตริคท์", meaning: "เข้มงวด" },
+  { word: "Stubborn", phon: "สตับเบิร์น", meaning: "ดื้อรั้น" },
+  { word: "Stupid", phon: "สติวพิด", meaning: "โง่" },
+  { word: "Surprised", phon: "เซอร์ไพรส์ด", meaning: "ประหลาดใจ" },
+  { word: "Sympathetic", phon: "ซิมพะเธทิก", meaning: "เห็นอกเห็นใจ" },
+  { word: "Talkative", phon: "ทอคคะทิฟ", meaning: "พูดเก่ง, ช่างคุย" },
+  { word: "Tense", phon: "เทนส์", meaning: "เครียด, ตึงเครียด" },
+  { word: "Terrified", phon: "เทอริไฟด์", meaning: "กลัวสุดขีด" },
+  { word: "Thoughtful", phon: "ธอทฟุล", meaning: "ใส่ใจ, คิดรอบคอบ" },
+  { word: "Tired", phon: "ไทเอิร์ด", meaning: "เหนื่อย" },
+  { word: "Tolerant", phon: "ทอลเลอเรนท์", meaning: "อดทน, ยอมรับความต่าง" },
+  { word: "Ugly", phon: "อัคลี", meaning: "น่าเกลียด" },
+  { word: "Unhappy", phon: "อันแฮปพี", meaning: "ไม่มีความสุข" },
+  { word: "Upset", phon: "อัพเซท", meaning: "อารมณ์เสีย, ผิดหวัง" },
+  { word: "Warm", phon: "วอร์ม", meaning: "อบอุ่น" },
+  { word: "Wise", phon: "ไวส์", meaning: "ฉลาดรอบรู้" },
+  { word: "Worried", phon: "เวอรีด", meaning: "เป็นกังวล" },
+  { word: "Accident", phon: "แอคซิเดนท์", meaning: "อุบัติเหตุ" },
+  { word: "Ache", phon: "เอก", meaning: "ปวด, เจ็บ" },
+  { word: "Allergy", phon: "แอลเลอร์จี", meaning: "อาการแพ้" },
+  { word: "Ankle", phon: "แองเคิล", meaning: "ข้อเท้า" },
+  { word: "Arm", phon: "อาร์ม", meaning: "แขน" },
+  { word: "Athlete", phon: "แอธลีท", meaning: "นักกีฬา" },
+  { word: "Backache", phon: "แบคเอก", meaning: "อาการปวดหลัง" },
+  { word: "Badminton", phon: "แบดมินตัน", meaning: "กีฬาแบดมินตัน" },
+  { word: "Bandage", phon: "แบนดิดจ์", meaning: "ผ้าพันแผล" },
+  { word: "Basketball", phon: "บาสเกตบอล", meaning: "กีฬาบาสเกตบอล" },
+  { word: "Bleed", phon: "บลีด", meaning: "เลือดไหล" },
+  { word: "Blood", phon: "บลัด", meaning: "เลือด" },
+  { word: "Body", phon: "บอดี", meaning: "ร่างกาย" },
+  { word: "Bone", phon: "โบน", meaning: "กระดูก" },
+  { word: "Breathe", phon: "บรีธ", meaning: "หายใจ" },
+  { word: "Broken", phon: "โบรเคน", meaning: "แตก, หัก" },
+  { word: "Bruise", phon: "บรูซ", meaning: "รอยช้ำ" },
+  { word: "Calf", phon: "คาฟ", meaning: "น่อง" },
+  { word: "Chest", phon: "เชสท์", meaning: "หน้าอก" },
+  { word: "Chin", phon: "ชิน", meaning: "คาง" },
+  { word: "Clinic", phon: "คลินิก", meaning: "คลินิกรักษาโรค" },
+  { word: "Cold", phon: "โคลด์", meaning: "เป็นหวัด, หนาว" },
+  { word: "Cough", phon: "คอฟ", meaning: "ไอ" },
+  { word: "Cure", phon: "คิวม์", meaning: "รักษา" },
+  { word: "Cycling", phon: "ไซคลิง", meaning: "การปั่นจักรยาน" },
+  { word: "Dentist", phon: "เดนทิสท์", meaning: "ทันตแพทย์" },
+  { word: "Diabetes", phon: "ไดอะบีทีส", meaning: "โรคเบาหวาน" },
+  { word: "Diet", phon: "ไดเอท", meaning: "อาหาร, ควบคุมอาหาร" },
+  { word: "Disease", phon: "ดิซีซ", meaning: "โรคภัยไข้เจ็บ" },
+  { word: "Dizzy", phon: "ดิซซี", meaning: "เวียนหัว" },
+  { word: "Doctor", phon: "ดอคเทอะ", meaning: "หมอ" },
+  { word: "Earache", phon: "เอียร์เอก", meaning: "ปวดหู" },
+  { word: "Elbow", phon: "เอลโบว์", meaning: "ข้อศอก" },
+  { word: "Emergency", phon: "อิมเมอร์เจนซี", meaning: "กรณีฉุกเฉิน" },
+  { word: "Eye", phon: "ไอ", meaning: "ตา" },
+  { word: "Face", phon: "เฟส", meaning: "ใบหน้า" },
+  { word: "Fever", phon: "ฟีเวอะ", meaning: "เป็นไข้" },
+  { word: "Finger", phon: "ฟิงเกอะ", meaning: "นิ้วมือ" },
+  { word: "Fit", phon: "ฟิท", meaning: "สุขภาพดี, ฟิต" },
+  { word: "Flu", phon: "ฟลู", meaning: "ไข้หวัดใหญ่" },
+  { word: "Foot", phon: "ฟุท", meaning: "เท้า" },
+  { word: "Football", phon: "ฟุตบอล", meaning: "กีฬาฟุตบอล" },
+  { word: "Forehead", phon: "ฟอร์เฮด / ฟอริต", meaning: "หน้าผาก" },
+  { word: "Fracture", phon: "แฟรคเชอะ", meaning: "กระดูกร้าวหรือหัก" },
+  { word: "Gym", phon: "จิม", meaning: "โรงยิม" },
+  { word: "Gymnastics", phon: "จิมนาสติกส์", meaning: "กีฬายิมนาสติก" },
+  { word: "Hair", phon: "แฮร์", meaning: "ผม" },
+  { word: "Hand", phon: "แฮนด์", meaning: "มือ" },
+  { word: "Headache", phon: "เฮดเอก", meaning: "ปวดหัว" },
+  { word: "Heart", phon: "ฮาร์ท", meaning: "หัวใจ" },
+  { word: "Heel", phon: "ฮีล", meaning: "ส้นเท้า" },
+  { word: "Hospital", phon: "ฮอสพิทัล", meaning: "โรงพยาบาล" },
+  { word: "Illness", phon: "อิลเนส", meaning: "ความเจ็บป่วย" },
+  { word: "Injury", phon: "อินเจอรี", meaning: "การบาดเจ็บ" },
+  { word: "Jogging", phon: "จอกกิง", meaning: "การวิ่งเหยาะๆ" },
+  { word: "Knee", phon: "นี", meaning: "หัวเข่า" },
+  { word: "Leg", phon: "เลก", meaning: "ขา" },
+  { word: "Lip", phon: "ลิพ", meaning: "ริมฝีปาก" },
+  { word: "Liver", phon: "ลิเวอะ", meaning: "ตับ" },
+  { word: "Lung", phon: "ลัง", meaning: "ปอด" },
+  { word: "Match", phon: "แมทช์", meaning: "การแข่งขัน" },
+  { word: "Medicine", phon: "เมดิซิน", meaning: "ยารักษาโรค" },
+  { word: "Muscle", phon: "มัสเซิล", meaning: "กล้ามเนื้อ" },
+  { word: "Neck", phon: "เนค", meaning: "คอ" },
+  { word: "Nurse", phon: "เนิร์ส", meaning: "พยาบาล" },
+  { word: "Ointment", phon: "ออยนท์เมนท์", meaning: "ยาทา, ขี้ผึ้ง" },
+  { word: "Pain", phon: "เพน", meaning: "ความเจ็บปวด" },
+  { word: "Pharmacy", phon: "ฟาร์มาซี", meaning: "ร้านขายยา" },
+  { word: "Pill", phon: "พิล", meaning: "ยาเม็ด" },
+  { word: "Prescription", phon: "พริสคริพชัน", meaning: "ใบสั่งยา" },
+  { word: "Recover", phon: "รีคัฟเวอะ", meaning: "ฟื้นตัว, หายดี" },
+  { word: "Runner", phon: "รันเนอะ", meaning: "นักวิ่ง" },
+  { word: "Shoulder", phon: "โชลเดอะ", meaning: "ไหล่" },
+  { word: "Skin", phon: "สกิน", meaning: "ผิวหนัง" },
+  { word: "Sneeze", phon: "สนีซ", meaning: "จาม" },
+  { word: "Sore throat", phon: "ซอร์ โธรท", meaning: "เจ็บคอ" },
+  { word: "Stomach", phon: "สตามัค", meaning: "กระเพาะอาหาร" },
+  { word: "Stomachache", phon: "สตามัคเอก", meaning: "ปวดท้อง" },
+  { word: "Sprain", phon: "สเปรน", meaning: "เคล็ด, แพลง" },
+  { word: "Surgery", phon: "เซอร์เจอรี", meaning: "การผ่าตัด" },
+  { word: "Swimming", phon: "สวิมมิง", meaning: "การว่ายน้ำ" },
+  { word: "Symptom", phon: "ซิมพะทัม", meaning: "อาการของโรค" },
+  { word: "Tablet", phon: "แท็บเลท", meaning: "ยาเม็ดแบน" },
+  { word: "Tennis", phon: "เทนนิส", meaning: "กีฬาเทนนิส" },
+  { word: "Thigh", phon: "ไธ", meaning: "ต้นขา" },
+  { word: "Throat", phon: "โธรท", meaning: "ลำคอ" },
+  { word: "Thumb", phon: "ธัมบ์", meaning: "นิ้วหัวแม่มือ" },
+  { word: "Toe", phon: "โท", meaning: "นิ้วเท้า" },
+  { word: "Toothache", phon: "ทูธเอก", meaning: "ปวดฟัน" },
+  { word: "Tournament", phon: "ทัวร์นาเมนท์", meaning: "การแข่งขันชิงชนะเลิศ" },
+  { word: "Treatment", phon: "ทรีทเมนท์", meaning: "การรักษา" },
+  { word: "Vaccine", phon: "แวคซีน", meaning: "วัคซีน" },
+  { word: "Vitamin", phon: "ไวตามิน / วิตามิน", meaning: "วิตามิน" },
+  { word: "Volleyball", phon: "วอลเลย์บอล", meaning: "กีฬาวอลเลย์บอล" },
+  { word: "Waist", phon: "เวสท์", meaning: "เอว" },
+  { word: "Wrist", phon: "ริสท์", meaning: "ข้อมือ" },
+  { word: "Bake", phon: "เบค", meaning: "อบ (ขนม)" },
+  { word: "Bakery", phon: "เบเคอรี", meaning: "ร้านขายขนมอบ" },
+  { word: "Beef", phon: "บีฟ", meaning: "เนื้อวัว" },
+  { word: "Beverage", phon: "เบฟเวอเรจ", meaning: "เครื่องดื่ม" },
+  { word: "Bill", phon: "บิล", meaning: "ใบเสร็จ, ใบแจ้งหนี้" },
+  { word: "Bitter", phon: "บิทเทอะ", meaning: "ขม" },
+  { word: "Boil", phon: "บอยล์", meaning: "ต้ม" },
+  { word: "Bowl", phon: "โบวล์", meaning: "ชาม" },
+  { word: "Bread", phon: "เบรด", meaning: "ขนมปัง" },
+  { word: "Breakfast", phon: "เบรคฟาสท์", meaning: "อาหารเช้า" },
+  { word: "Broil", phon: "บรอยล์", meaning: "ย่าง (ด้วยไฟบน)" },
+  { word: "Butter", phon: "บัทเทอะ", meaning: "เนย" },
+  { word: "Cafe", phon: "คาเฟ่", meaning: "ร้านกาแฟ" },
+  { word: "Cake", phon: "เคค", meaning: "เค้ก" },
+  { word: "Cash", phon: "แคช", meaning: "เงินสด" },
+  { word: "Cashier", phon: "แคชเชียร์", meaning: "พนักงานเก็บเงิน" },
+  { word: "Change", phon: "เชนจ์", meaning: "เงินทอน, เปลี่ยน" },
+  { word: "Cheap", phon: "ชีพ", meaning: "ราคาถูก" },
+  { word: "Cheese", phon: "ชีซ", meaning: "ชีส" },
+  { word: "Chef", phon: "เชฟ", meaning: "พ่อครัวใหญ่" },
+  { word: "Chicken", phon: "ชิคเคน", meaning: "ไก่, เนื้อไก่" },
+  { word: "Chop", phon: "ชอพ", meaning: "สับ, หั่นชิ้นหนา" },
+  { word: "Coin", phon: "คอยน์", meaning: "เหรียญ" },
+  { word: "Cook", phon: "คุค", meaning: "ปรุงอาหาร, คนครัว" },
+  { word: "Cost", phon: "คอสท์", meaning: "ราคา, มีราคา" },
+  { word: "Credit card", phon: "เครดิต คาร์ด", meaning: "บัตรเครดิต" },
+  { word: "Crispy", phon: "คริสปี", meaning: "กรอบ" },
+  { word: "Customer", phon: "คัสทอมเมอะ", meaning: "ลูกค้า" },
+  { word: "Dairy", phon: "แดรี", meaning: "ผลิตภัณฑ์จากนม" },
+  { word: "Delicious", phon: "ดิลิเชียส", meaning: "อร่อย" },
+  { word: "Delivery", phon: "ดิลิเวอรี", meaning: "การจัดส่ง" },
+  { word: "Dessert", phon: "ดิเซิร์ท", meaning: "ของหวาน" },
+  { word: "Discount", phon: "ดิสเคานท์", meaning: "ส่วนลด" },
+  { word: "Dish", phon: "ดิช", meaning: "จาน, อาหาร" },
+  { word: "Egg", phon: "เอก", meaning: "ไข่" },
+  { word: "Expensive", phon: "อิกสเพนสิฟ", meaning: "แพง" },
+  { word: "Fast food", phon: "ฟาสท์ ฟูด", meaning: "อาหารจานด่วน" },
+  { word: "Flavor", phon: "เฟลเวอะ", meaning: "รสชาติ" },
+  { word: "Flour", phon: "ฟลาวเออะ", meaning: "แป้งทำอาหาร" },
+  { word: "Fork", phon: "ฟอร์ค", meaning: "ส้อม" },
+  { word: "Fresh", phon: "เฟรช", meaning: "สด" },
+  { word: "Fried rice", phon: "ไฟรด์ ไรซ์", meaning: "ข้าวผัด" },
+  { word: "Frozen", phon: "โฟรเซน", meaning: "แช่แข็ง" },
+  { word: "Fruit", phon: "ฟรูท", meaning: "ผลไม้" },
+  { word: "Fry", phon: "ไฟร", meaning: "ทอด" },
+  { word: "Garlic", phon: "การ์ลิค", meaning: "กระเทียม" },
+  { word: "Glass", phon: "กลาส", meaning: "แก้วน้ำ" },
+  { word: "Grill", phon: "กริลล์", meaning: "ย่าง" },
+  { word: "Grocery", phon: "โกรเซอรี", meaning: "ร้านขายของชำ" },
+  { word: "Honey", phon: "ฮันนี", meaning: "น้ำผึ้ง" },
+  { word: "Hungry", phon: "ฮังกรี", meaning: "หิว" },
+  { word: "Ingredient", phon: "อินกรีเดียนท์", meaning: "ส่วนผสม" },
+  { word: "Juice", phon: "จูซ", meaning: "น้ำผลไม้" },
+  { word: "Knife", phon: "ไนฟ์", meaning: "มีด" },
+  { word: "Market", phon: "มาร์เกต", meaning: "ตลาด" },
+  { word: "Meat", phon: "มีท", meaning: "เนื้อสัตว์" },
+  { word: "Menu", phon: "เมนู", meaning: "รายการอาหาร" },
+  { word: "Milk", phon: "มิลค์", meaning: "นม" },
+  { word: "Mix", phon: "มิกซ์", meaning: "ผสม" },
+  { word: "Noodle", phon: "นูดเดิล", meaning: "ก๋วยเตี๋ยว, บะหมี่" },
+  { word: "Nut", phon: "นัท", meaning: "ถั่ว" },
+  { word: "Oil", phon: "ออยล์", meaning: "น้ำมัน" },
+  { word: "Onion", phon: "ออนเนียน", meaning: "หัวหอม" },
+  { word: "Order", phon: "ออร์เดอร์", meaning: "สั่งซื้อ, รายการสั่ง" },
+  { word: "Pan", phon: "แพน", meaning: "กระทะ" },
+  { word: "Pay", phon: "เพย์", meaning: "จ่ายเงิน" },
+  { word: "Pepper", phon: "เพพเพอะ", meaning: "พริกไทย, พริกหยวก" },
+  { word: "Pork", phon: "พอร์ค", meaning: "เนื้อหมู" },
+  { word: "Pot", phon: "พอท", meaning: "หม้อ" },
+  { word: "Price", phon: "ไพรซ์", meaning: "ราคา" },
+  { word: "Receipt", phon: "รีซีท", meaning: "ใบเสร็จรับเงิน" },
+  { word: "Recipe", phon: "เรสซะพี", meaning: "สูตรอาหาร" },
+  { word: "Restaurant", phon: "เรสทอรันต์", meaning: "ร้านอาหาร" },
+  { word: "Rice", phon: "ไรซ์", meaning: "ข้าว" },
+  { word: "Roast", phon: "โรสท์", meaning: "อบ, ย่าง" },
+  { word: "Salad", phon: "แซลัด", meaning: "สลัด" },
+  { word: "Salt", phon: "ซอลท์", meaning: "เกลือ" },
+  { word: "Sandwich", phon: "แซนด์วิช", meaning: "แซนด์วิช" },
+  { word: "Sauce", phon: "ซอส", meaning: "ซอส" },
+  { word: "Seafood", phon: "ซีฟูด", meaning: "อาหารทะเล" },
+  { word: "Sell", phon: "เซลล์", meaning: "ขาย" },
+  { word: "Shop", phon: "ชอพ", meaning: "ร้านค้า, ซื้อของ" },
+  { word: "Slice", phon: "สไลซ์", meaning: "หั่นเป็นแผ่นบาง" },
+  { word: "Snack", phon: "สแนค", meaning: "ขนมขบเคี้ยว, อาหารว่าง" },
+  { word: "Soup", phon: "ซูป", meaning: "ซุป" },
+  { word: "Sour", phon: "ซาวเออะ", meaning: "เปรี้ยว" },
+  { word: "Spicy", phon: "สไปซี", meaning: "เผ็ด" },
+  { word: "Spoon", phon: "สปูน", meaning: "ช้อน" },
+  { word: "Steam", phon: "สตีม", meaning: "นึ่ง" },
+  { word: "Store", phon: "สตอร์", meaning: "ร้านค้า, คลังสินค้า" },
+  { word: "Sugar", phon: "ชูเกอะ", meaning: "น้ำตาล" },
+  { word: "Supermarket", phon: "ซูเปอร์มาร์เกต", meaning: "ซูเปอร์มาร์เก็ต" },
+  { word: "Sweet", phon: "สวีท", meaning: "หวาน" },
+  { word: "Taste", phon: "เทสท์", meaning: "รสชาติ, ชิม" },
+  { word: "Thirsty", phon: "เธอร์สที", meaning: "กระหายน้ำ" },
+  { word: "Tip", phon: "ทิพ", meaning: "เงินรางวัล, เคล็ดลับ" },
+  { word: "Vegetable", phon: "เวดจ์ทะเบิล", meaning: "ผัก" },
+  { word: "Waiter", phon: "เวเทอะ", meaning: "บริกรชาย" },
+  { word: "Waitress", phon: "เวเทรส", meaning: "บริกรหญิง" },
+  { word: "Abroad", phon: "อะบรอด", meaning: "ต่างประเทศ" },
+  { word: "Accommodation", phon: "อะคอมโมเดชัน", meaning: "ที่พัก" },
+  { word: "Airport", phon: "แอร์พอร์ต", meaning: "สนามบิน" },
+  { word: "Amusement park", phon: "อะมิวส์เมนท์ พาร์ค", meaning: "สวนสนุก" },
+  { word: "Arrival", phon: "อะรายวัล", meaning: "การมาถึง" },
+  { word: "Avenue", phon: "แอฟเวอนิว", meaning: "ถนนใหญ่" },
+  { word: "Baggage", phon: "แบกเกจ", meaning: "กระเป๋าเดินทาง" },
+  { word: "Bank", phon: "แบงค์", meaning: "ธนาคาร" },
+  { word: "Beach", phon: "บีช", meaning: "ชายหาด" },
+  { word: "Bicycle", phon: "ไบสิเคิล", meaning: "จักรยาน" },
+  { word: "Book", phon: "บุค", meaning: "จอง (ตั๋ว/ที่พัก)" },
+  { word: "Border", phon: "บอร์เดอร์", meaning: "ชายแดน" },
+  { word: "Bridge", phon: "บริดจ์", meaning: "สะพาน" },
+  { word: "Bus station", phon: "บัส สเตชัน", meaning: "สถานีขนส่งผู้โดยสาร" },
+  { word: "Cabin", phon: "แคบิน", meaning: "ห้องเคบิน, กระท่อม" },
+  { word: "Camera", phon: "แคมเมอรา", meaning: "กล้องถ่ายรูป" },
+  { word: "Castle", phon: "คาสเซิล", meaning: "ปราสาท" },
+  { word: "Church", phon: "เชิร์ช", meaning: "โบสถ์" },
+  { word: "Cinema", phon: "ซิเนมา", meaning: "โรงภาพยนตร์" },
+  { word: "City", phon: "ซิตี", meaning: "เมืองใหญ่" },
+  { word: "Corner", phon: "คอร์เนอะ", meaning: "มุมถนนหัวมุม" },
+  { word: "Crossroad", phon: "ครอสโรด", meaning: "สี่แยก" },
+  { word: "Cruise", phon: "ครูซ", meaning: "การล่องเรือสำราญ" },
+  { word: "Customs", phon: "คัสตัมส์", meaning: "ศุลกากร" },
+  { word: "Delay", phon: "ดิเลย์", meaning: "ล่าช้า" },
+  { word: "Departure", phon: "ดิพาร์เชอะ", meaning: "การออกเดินทาง" },
+  { word: "Destination", phon: "เดสทิเนชัน", meaning: "จุดหมายปลายทาง" },
+  { word: "Direction", phon: "ไดเรคชัน", meaning: "ทิศทาง" },
+  { word: "Downtown", phon: "ดาวน์ทาวน์", meaning: "ย่านใจกลางเมือง" },
+  { word: "East", phon: "อีสท์", meaning: "ทิศตะวันออก" },
+  { word: "Embassy", phon: "เอมบัสซี", meaning: "สถานเอกอัครราชทูต" },
+  { word: "Explore", phon: "อิกสพลอร์", meaning: "สำรวจ" },
+  { word: "Fare", phon: "แฟร์", meaning: "ค่าโดยสาร" },
+  { word: "Flight", phon: "ไฟลท์", meaning: "เที่ยวบิน" },
+  { word: "Foreigner", phon: "ฟอเรินเนอะ", meaning: "ชาวต่างชาติ" },
+  { word: "Guide", phon: "ไกด์", meaning: "มัคคุเทศก์, แนะนำ" },
+  { word: "Harbor", phon: "ฮาร์เบอะ", meaning: "ท่าเรือ" },
+  { word: "Highway", phon: "ไฮเวย์", meaning: "ทางหลวง" },
+  { word: "Hotel", phon: "โฮเทล", meaning: "โรงแรม" },
+  { word: "Information", phon: "อินฟอร์เมชัน", meaning: "ข้อมูลข่าวสาร" },
+  { word: "Intersection", phon: "อินเทอร์เซกชัน", meaning: "ทางแยก" },
+  { word: "Island", phon: "ไอแลนด์", meaning: "เกาะ" },
+  { word: "Journey", phon: "เจอร์นี", meaning: "การเดินทาง" },
+  { word: "Left", phon: "เลฟท์", meaning: "ซ้าย" },
+  { word: "Luggage", phon: "ลักเกจ", meaning: "กระเป๋าเดินทาง" },
+  { word: "Map", phon: "แมพ", meaning: "แผนที่" },
+  { word: "Metro", phon: "เมโทร", meaning: "รถไฟใต้ดิน" },
+  { word: "Monument", phon: "มอนิวมันท์", meaning: "อนุสาวรีย์" },
+  { word: "Museum", phon: "มิวเซียม", meaning: "พิพิธภัณฑ์" },
+  { word: "North", phon: "นอร์ธ", meaning: "ทิศเหนือ" },
+  { word: "Officer", phon: "ออฟฟิเซอร์", meaning: "เจ้าหน้าที่" },
+  { word: "Park", phon: "พาร์ค", meaning: "สวนสาธารณะ, จอดรถ" },
+  { word: "Passenger", phon: "แพสเซนเจอร์", meaning: "ผู้โดยสาร" },
+  { word: "Passport", phon: "พาสปอร์ต", meaning: "หนังสือเดินทาง" },
+  { word: "Path", phon: "พาธ", meaning: "เส้นทาง, ทางเดิน" },
+  { word: "Platform", phon: "แพลตฟอร์ม", meaning: "ชานชาลา" },
+  { word: "Police station", phon: "พะลิส สเตชัน", meaning: "สถานีตำรวจ" },
+  { word: "Post office", phon: "โพสท์ ออฟฟิศ", meaning: "ไปรษณีย์" },
+  { word: "Railway", phon: "เรลเวย์", meaning: "ทางรถไฟ" },
+  { word: "Reservation", phon: "เรเซอเวชัน", meaning: "การจอง" },
+  { word: "Resort", phon: "รีสอร์ต", meaning: "สถานที่พักตากอากาศ" },
+  { word: "Right", phon: "ไรท์", meaning: "ขวา, ถูกต้อง" },
+  { word: "Road", phon: "โรด", meaning: "ถนน" },
+  { word: "Route", phon: "รูท", meaning: "เส้นทาง" },
+  { word: "Safari", phon: "สะฟารี", meaning: "การส่องสัตว์" },
+  { word: "Seaside", phon: "ซีไซด์", meaning: "ชายทะเล" },
+  { word: "Sign", phon: "ไซน์", meaning: "ป้าย, สัญลักษณ์" },
+  { word: "South", phon: "เซาธ์", meaning: "ทิศใต้" },
+  { word: "Souvenir", phon: "ซูวะเนียร์", meaning: "ของที่ระลึก" },
+  { word: "Stadium", phon: "สเตเดียม", meaning: "สนามกีฬา" },
+  { word: "Station", phon: "สเตชัน", meaning: "สถานี" },
+  { word: "Straight", phon: "สเตรท", meaning: "ตรงไป" },
+  { word: "Street", phon: "สตรีท", meaning: "ถนน" },
+  { word: "Subway", phon: "ซับเวย์", meaning: "รถไฟใต้ดิน" },
+  { word: "Suitcase", phon: "สูทเคส", meaning: "กระเป๋าเดินทางแบบถือ" },
+  { word: "Temple", phon: "เทมเพิล", meaning: "วัด" },
+  { word: "Terminal", phon: "เทอร์มินัล", meaning: "สถานีปลายทาง/อาคารผู้โดยสาร" },
+  { word: "Ticket", phon: "ทิคเกต", meaning: "ตั๋ว" },
+  { word: "Tour", phon: "ทัวร์", meaning: "การท่องเที่ยว" },
+  { word: "Tourism", phon: "ทัวริซึม", meaning: "การท่องเที่ยว" },
+  { word: "Tourist", phon: "ทัวริสท์", meaning: "นักท่องเที่ยว" },
+  { word: "Traffic", phon: "แทรฟฟิก", meaning: "การจราจร" },
+  { word: "Train", phon: "เทรน", meaning: "รถไฟ" },
+  { word: "Transportation", phon: "ทรานสพอร์เทชัน", meaning: "การขนส่ง" },
+  { word: "Travel", phon: "แทรเวล", meaning: "เดินทาง" },
+  { word: "Trip", phon: "ทริป", meaning: "การเดินทางท่องเที่ยวระยะสั้น" },
+  { word: "Tunnel", phon: "ทันเนล", meaning: "อุโมงค์" },
+  { word: "Turn", phon: "เทิร์น", meaning: "เลี้ยว, หมุน" },
+  { word: "Underground", phon: "อันเดอร์กราวด์", meaning: "ใต้ดิน" },
+  { word: "Vacation", phon: "แวเคชัน", meaning: "ช่วงวันหยุดยาว" },
+  { word: "Vehicle", phon: "วีฮิเคิล", meaning: "ยานพาหนะ" },
+  { word: "Village", phon: "วิลเลจ", meaning: "หมู่บ้าน" },
+  { word: "Visa", phon: "วีซ่า", meaning: "วีซ่า (เอกสารอนุญาตเข้าประเทศ)" },
+  { word: "Voyage", phon: "วอยอิจ", meaning: "การเดินทางไกลทางเรือหรืออวกาศ" },
+  { word: "West", phon: "เวสท์", meaning: "ทิศตะวันตก" },
+  { word: "Zoo", phon: "ซู", meaning: "สวนสัตว์" },
+  { word: "Local", phon: "โลคอล", meaning: "ท้องถิ่น" },
+  { word: "Sightseeing", phon: "ไซท์ซีอิง", meaning: "การเที่ยวชมทิวทัศน์" },
+  { word: "Air", phon: "แอร์", meaning: "อากาศ" },
+  { word: "Atmosphere", phon: "แอตมอสเฟียร์", meaning: "ชั้นบรรยากาศ" },
+  { word: "Autumn", phon: "ออทัม", meaning: "ฤดูใบไม้ร่วง" },
+  { word: "Avalanche", phon: "แอฟวะลานช์", meaning: "หิมะถล่ม" },
+  { word: "Breeze", phon: "บรีซ", meaning: "ลมพัดเอื่อยๆ" },
+  { word: "Cave", phon: "เคฟ", meaning: "ถ้ำ" },
+  { word: "Climate", phon: "ไคลเมท", meaning: "ภูมิอากาศ" },
+  { word: "Cloud", phon: "คลาวด์", meaning: "เมฆ" },
+  { word: "Coast", phon: "โคสท์", meaning: "ชายฝั่ง" },
+  { word: "Conservation", phon: "คอนเซอเวชัน", meaning: "การอนุรักษ์" },
+  { word: "Continent", phon: "คอนทิเนนท์", meaning: "ทวีป" },
+  { word: "Damage", phon: "แดมมิจ", meaning: "ความเสียหาย" },
+  { word: "Desert", phon: "เดสเซิร์ท", meaning: "ทะเลทราย" },
+  { word: "Disaster", phon: "ดิซาสเทอะ", meaning: "ภัยพิบัติ" },
+  { word: "Drought", phon: "เดราท์", meaning: "ความแห้งแล้ง" },
+  { word: "Earth", phon: "เอิร์ธ", meaning: "โลก" },
+  { word: "Earthquake", phon: "เอิร์ธเควก", meaning: "แผ่นดินไหว" },
+  { word: "Ecology", phon: "อีโคโลจี", meaning: "นิเวศวิทยา" },
+  { word: "Eco-friendly", phon: "อีโค เฟรนดลี", meaning: "เป็นมิตรต่อสิ่งแวดล้อม" },
+  { word: "Environment", phon: "อินไวรอนเมนท์", meaning: "สิ่งแวดล้อม" },
+  { word: "Eruption", phon: "อิรัพชัน", meaning: "การระเบิด (ภูเขาไฟ)" },
+  { word: "Extinct", phon: "อิกสติงค์ท", meaning: "สูญพันธุ์" },
+  { word: "Flood", phon: "ฟลัด", meaning: "น้ำท่วม" },
+  { word: "Fog", phon: "ฟอก", meaning: "หมอก" },
+  { word: "Forest", phon: "ฟอเรสท์", meaning: "ป่าไม้" },
+  { word: "Global warming", phon: "โกลบอล วอร์มมิง", meaning: "ภาวะโลกร้อน" },
+  { word: "Greenhouse effect", phon: "กรีนเฮาส์ อิเฟกท์", meaning: "ปรากฏการณ์เรือนกระจก" },
+  { word: "Habitat", phon: "แฮบิแทท", meaning: "ถิ่นที่อยู่อาศัยของสิ่งมีชีวิต" },
+  { word: "Hill", phon: "ฮิลล์", meaning: "เนินเขา" },
+  { word: "Humidity", phon: "ฮิวมิดิตี", meaning: "ความชื้น" },
+  { word: "Hurricane", phon: "เฮอริเคน", meaning: "พายุเฮอริเคน" },
+  { word: "Iceberg", phon: "ไอซ์เบิร์ก", meaning: "ภูเขาน้ำแข็ง" },
+  { word: "Jungle", phon: "จังเกิล", meaning: "ป่าทึบ" },
+  { word: "Lake", phon: "เลค", meaning: "ทะเลสาบ" },
+  { word: "Lightning", phon: "ไลท์นิง", meaning: "ฟ้าแลบ" },
+  { word: "Mountain", phon: "เมาน์เทน", meaning: "ภูเขา" },
+  { word: "Nature", phon: "เนเชอะ", meaning: "ธรรมชาติ" },
+  { word: "Ocean", phon: "โอเชียน", meaning: "มหาสมุทร" },
+  { word: "Oxygen", phon: "ออกซิเจน", meaning: "ก๊าซออกซิเจน" },
+  { word: "Ozone layer", phon: "โอโซน เลเยอร์", meaning: "ชั้นโอโซน" },
+  { word: "Planet", phon: "แพลนเนท", meaning: "ดาวเคราะห์" },
+  { word: "Pollution", phon: "พอลลูชัน", meaning: "มลพิษ" },
+  { word: "Rain", phon: "เรน", meaning: "ฝน" },
+  { word: "Rainbow", phon: "เรนโบว์", meaning: "รุ้งกินน้ำ" },
+  { word: "Rainforest", phon: "เรนฟอเรสท์", meaning: "ป่าดงดิบ" },
+  { word: "Recycle", phon: "รีไซเคิล", meaning: "นำกลับมาใช้ใหม่" },
+  { word: "Resource", phon: "รีซอร์ส", meaning: "ทรัพยากร" },
+  { word: "River", phon: "ริเวอะ", meaning: "แม่น้ำ" },
+  { word: "Season", phon: "ซีซัน", meaning: "ฤดูกาล" },
+  { word: "Seaweed", phon: "ซีวี้ด", meaning: "สาหร่ายทะเล" },
+  { word: "Sky", phon: "สกาย", meaning: "ท้องฟ้า" },
+  { word: "Smog", phon: "สมอก", meaning: "หมอกควัน" },
+  { word: "Snow", phon: "สโนว์", meaning: "หิมะ" },
+  { word: "Soil", phon: "ซอยล์", meaning: "ดิน" },
+  { word: "Solar energy", phon: "โซลาร์ เอนเนอร์จี", meaning: "พลังงานแสงอาทิตย์" },
+  { word: "Species", phon: "สปีชีส์", meaning: "สายพันธุ์" },
+  { word: "Spring", phon: "สปริง", meaning: "ฤดูใบไม้ผลิ" },
+  { word: "Storm", phon: "สตอร์ม", meaning: "พายุ" },
+  { word: "Summer", phon: "ซัมเมอะ", meaning: "ฤดูร้อน" },
+  { word: "Sunlight", phon: "ซันไลท์", meaning: "แสงแดด" },
+  { word: "Temperature", phon: "เทมเพอเรเชอะ", meaning: "อุณหภูมิ" },
+  { word: "Thunder", phon: "ธันเดอะ", meaning: "ฟ้าร้อง" },
+  { word: "Tornado", phon: "ทอร์นาโด", meaning: "พายุทอร์นาโด" },
+  { word: "Valley", phon: "แวลลี", meaning: "หุบเขา" },
+  { word: "Volcano", phon: "วอลเคโน", meaning: "ภูเขาไฟ" },
+  { word: "Waste", phon: "เวสท์", meaning: "ขยะ, ของเสีย" },
+  { word: "Waterfall", phon: "วอเตอร์ฟอล", meaning: "น้ำตก" },
+  { word: "Weather", phon: "เวเธอะ", meaning: "สภาพอากาศ" },
+  { word: "Wildlife", phon: "ไวลด์ไลฟ์", meaning: "สัตว์ป่า" },
+  { word: "Wind", phon: "วินด์", meaning: "ลม" },
+  { word: "Winter", phon: "วินเทอะ", meaning: "ฤดูหนาว" },
+  { word: "Wood", phon: "วูด", meaning: "ไม้, ป่าไม้" },
+  { word: "Fossil", phon: "ฟอสซิล", meaning: "ซากดึกดำบรรพ์" },
+  { word: "Glacier", phon: "แกลเซียร์", meaning: "ธารน้ำแข็ง" },
+  { word: "Melting", phon: "เมลทิง", meaning: "การละลาย" },
+  { word: "Organic", phon: "ออร์แกนิก", meaning: "เกษตรอินทรีย์" },
+  { word: "Protect", phon: "พรุเทคท์", meaning: "ปกป้อง" },
+  { word: "Radiation", phon: "เรดิเอชัน", meaning: "รังสี" },
+  { word: "Refuse", phon: "รีฟิวส์", meaning: "ปฏิเสธ" },
+  { word: "Renewable", phon: "รีนิวอะเบิล", meaning: "พลังงานหมุนเวียน" },
+  { word: "Reuse", phon: "รียูซ", meaning: "นำกลับมาใช้ซ้ำ" },
+  { word: "Sand", phon: "แซนด์", meaning: "ทราย" },
+  { word: "Scenery", phon: "ซีนเนอรี", meaning: "ทัศนียภาพ" },
+  { word: "Sea", phon: "ซี", meaning: "ทะเล" },
+  { word: "Severe", phon: "ซิเวียร์", meaning: "รุนแรง" },
+  { word: "Star", phon: "สตาร์", meaning: "ดวงดาว" },
+  { word: "Stream", phon: "สตรีม", meaning: "ลำธาร" },
+  { word: "Sun", phon: "ซัน", meaning: "พระอาทิตย์" },
+  { word: "Survival", phon: "เซอร์ไววัล", meaning: "การอยู่รอด" },
+  { word: "Toxic", phon: "ทอคสิก", meaning: "เป็นพิษ" },
+  { word: "Tsunami", phon: "สึนามิ", meaning: "คลื่นสึนามิ" },
+  { word: "Typhoon", phon: "ไต้ฝุ่น", meaning: "พายุไต้ฝุ่น" },
+  { word: "Wave", phon: "เวด", meaning: "คลื่น" },
+  { word: "Wildfire", phon: "ไวลด์ไฟร์", meaning: "ไฟป่า" },
+  { word: "Zone", phon: "โซน", meaning: "เขต, พื้นที่" },
+  { word: "Access", phon: "แอคเซส", meaning: "เข้าถึงข้อมูล" },
+  { word: "Account", phon: "อะเคาท์", meaning: "บัญชีผู้ใช้" },
+  { word: "Algorithm", phon: "แอลกอริทึม", meaning: "ขั้นตอนวิธีแก้ปัญหา" },
+  { word: "App", phon: "แอป", meaning: "แอปพลิเคชัน" },
+  { word: "Attachment", phon: "อะแทชเมนท์", meaning: "ไฟล์แนบ" },
+  { word: "Battery", phon: "แบทเทอรี", meaning: "แบตเตอรี่" },
+  { word: "Blog", phon: "บล็อก", meaning: "บันทึกออนไลน์" },
+  { word: "Broadband", phon: "บรอดแบนด์", meaning: "อินเทอร์เน็ตความเร็วสูง" },
+  { word: "Browser", phon: "บราว์เซอร์", meaning: "โปรแกรมท่องเว็บ" },
+  { word: "Cable", phon: "เคเบิล", meaning: "สายไฟ, สายเคเบิล" },
+  { word: "Cell phone", phon: "เซลล์ โฟน", meaning: "โทรศัพท์มือถือ" },
+  { word: "Channel", phon: "แชนเนล", meaning: "ช่องสัญญาณ, ช่องทีวี" },
+  { word: "Chat", phon: "แชท", meaning: "คุยออนไลน์" },
+  { word: "Chemical", phon: "เคมิคัล", meaning: "สารเคมี" },
+  { word: "Computer", phon: "คอมพิวเตอร์", meaning: "คอมพิวเตอร์" },
+  { word: "Connection", phon: "คอนเนคชัน", meaning: "การเชื่อมต่อ" },
+  { word: "Data", phon: "เดทา / ดาทา", meaning: "ข้อมูล" },
+  { word: "Database", phon: "เดทาเบส", meaning: "ฐานข้อมูล" },
+  { word: "Device", phon: "ดีไวซฺ", meaning: "อุปกรณ์" },
+  { word: "Digital", phon: "ดิจิทัล", meaning: "ดิจิทัล" },
+  { word: "Discovery", phon: "ดิสคัฟเวอรี", meaning: "การค้นพบ" },
+  { word: "Download", phon: "ดาวน์โหลด", meaning: "ดาวน์โหลดไฟล์" },
+  { word: "Electricity", phon: "อิเล็กทริซิตี", meaning: "ไฟฟ้า" },
+  { word: "Email", phon: "อีเมล", meaning: "จดหมายอิเล็กทรอนิกส์" },
+  { word: "Energy", phon: "เอนเนอร์จี", meaning: "พลังงาน" },
+  { word: "Engine", phon: "เอนจิน", meaning: "เครื่องยนต์, โปรแกรมหลัก" },
+  { word: "Equipment", phon: "อิควิพเมนท์", meaning: "อุปกรณ์" },
+  { word: "File", phon: "ไฟล์", meaning: "แฟ้มข้อมูล" },
+  { word: "Gadget", phon: "แกดเจต", meaning: "อุปกรณ์ไอทีขนาดเล็ก" },
+  { word: "Gravity", phon: "แกรวิตี", meaning: "แรงโน้มถ่วง" },
+  { word: "Hardware", phon: "ฮาร์ดแวร์", meaning: "ส่วนฮาร์ดแวร์คอมพิวเตอร์" },
+  { word: "Headphones", phon: "เฮดโฟนส์", meaning: "หูฟัง" },
+  { word: "Icon", phon: "ไอคอน", meaning: "สัญลักษณ์บนจอ" },
+  { word: "Innovation", phon: "อินโนเวชัน", meaning: "นวัตกรรม" },
+  { word: "Internet", phon: "อินเทอร์เน็ต", meaning: "อินเทอร์เน็ต" },
+  { word: "Invention", phon: "อินเวนชัน", meaning: "สิ่งประดิษฐ์" },
+  { word: "Keyboard", phon: "คีย์บอร์ด", meaning: "แป้นพิมพ์" },
+  { word: "Laptop", phon: "แล็ปท็อป", meaning: "คอมพิวเตอร์พกพา" },
+  { word: "Link", phon: "ลิงก์", meaning: "จุดเชื่อมโยงเว็บ" },
+  { word: "Media", phon: "มีเดีย", meaning: "สื่อสารมวลชน" },
+  { word: "Message", phon: "เมสเสดจ์", meaning: "ข้อความ" },
+  { word: "Microscope", phon: "ไมโครสโคป", meaning: "กล้องจุลทรรศน์" },
+  { word: "Mobile", phon: "โมบาย", meaning: "เคลื่อนที่, มือถือ" },
+  { word: "Monitor", phon: "มอนิเทอะ", meaning: "จอภาพ" },
+  { word: "Mouse", phon: "เมาส์", meaning: "เมาส์คอมพิวเตอร์" },
+  { word: "Network", phon: "เน็ตเวิร์ค", meaning: "เครือข่าย" },
+  { word: "Online", phon: "ออนไลน์", meaning: "เชื่อมต่อเน็ต" },
+  { word: "Password", phon: "พาสเวิร์ด", meaning: "รหัสผ่าน" },
+  { word: "Privacy", phon: "ไพรเวซี", meaning: "ความเป็นส่วนตัว" },
+  { word: "Program", phon: "โปรแกรม", meaning: "โปรแกรม, วางแผน" },
+  { word: "Research", phon: "รีเสิร์ช", meaning: "วิจัย" },
+  { word: "Robot", phon: "โรบอท", meaning: "หุ่นยนต์" },
+  { word: "Satellite", phon: "แซทเทลไลท์", meaning: "ดาวเทียม" },
+  { word: "Science", phon: "ไซเอนซ์", meaning: "วิทยาศาสตร์" },
+  { word: "Screen", phon: "สกรีน", meaning: "หน้าจอ" },
+  { word: "Search", phon: "เซิร์ช", meaning: "ค้นหา" },
+  { word: "Security", phon: "ซิคิวริที", meaning: "ความปลอดภัย" },
+  { word: "Sensor", phon: "เซนเซอร์", meaning: "อุปกรณ์ตรวจจับ" },
+  { word: "Smartphone", phon: "สมาร์ทโฟน", meaning: "สมาร์ทโฟน" },
+  { word: "Software", phon: "ซอฟต์แวร์", meaning: "โปรแกรมคอมพิวเตอร์" },
+  { word: "Space", phon: "สเปซ", meaning: "อวกาศ" },
+  { word: "System", phon: "ซิสเท็ม", meaning: "ระบบ" },
+  { word: "Technology", phon: "เทคโนโลยี", meaning: "เทคโนโลยี" },
+  { word: "Telegraph", phon: "เทเลกราฟ", meaning: "โทรเลข" },
+  { word: "Telephone", phon: "เทเลโฟน", meaning: "โทรศัพท์" },
+  { word: "Telescope", phon: "เทเลสโคป", meaning: "กล้องโทรทรรศน์" },
+  { word: "Television", phon: "เทเลวิชัน", meaning: "โทรทัศน์" },
+  { word: "Text", phon: "เท็กซ์", meaning: "ข้อความ" },
+  { word: "Upload", phon: "อัปโหลด", meaning: "อัปโหลดไฟล์" },
+  { word: "User", phon: "ยูเซอร์", meaning: "ผู้ใช้" },
+  { word: "Video", phon: "วิดีโอ", meaning: "วิดีโอ" },
+  { word: "Virus", phon: "ไวรัส", meaning: "ไวรัส" },
+  { word: "Website", phon: "เว็บไซต์", meaning: "เว็บไซต์" },
+  { word: "Wireless", phon: "ไวร์เลส", meaning: "ไร้สาย" },
+  { word: "Button", phon: "บัทเทิน", meaning: "ปุ่ม" },
+  { word: "Click", phon: "คลิก", meaning: "คลิกเมาส์" },
+  { word: "Code", phon: "โค้ด", meaning: "รหัส, ลงรหัส" },
+  { word: "Developer", phon: "ดิเวลลอปเพอะ", meaning: "นักพัฒนา" },
+  { word: "Error", phon: "เออร์เรอะ", meaning: "ข้อผิดพลาด" },
+  { word: "Function", phon: "ฟังก์ชัน", meaning: "การทำงาน, หน้าที่" },
+  { word: "Install", phon: "อินสทอล", meaning: "ติดตั้ง" },
+  { word: "Log in", phon: "ล็อกอิน", meaning: "เข้าสู่ระบบ" },
+  { word: "Log out", phon: "ล็อกเอาท์", meaning: "ออกจากระบบ" },
+  { word: "Memory", phon: "เมมโมรี", meaning: "หน่วยความจำ" },
+  { word: "Notification", phon: "โนทิฟิเคชัน", meaning: "การแจ้งเตือน" },
+  { word: "Phishing", phon: "ฟิชชิง", meaning: "การหลอกลวงออนไลน์" },
+  { word: "Post", phon: "โพสท์", meaning: "โพสต์ข้อความ" },
+  { word: "Recharge", phon: "รีชาร์จ", meaning: "ชาร์จแบตเตอรี่ใหม่" },
+  { word: "Signal", phon: "ซิกนัล", meaning: "สัญญาณ" },
+  { word: "Social network", phon: "โซเชียล เน็ตเวิร์ค", meaning: "เครือข่ายสังคมออนไลน์" },
+  { word: "Subscribe", phon: "ซับสไครบ์", meaning: "สมัครรับข้อมูล" },
+  { word: "Technical", phon: "เทคนิคอล", meaning: "เกี่ยวกับเทคนิค" },
+  { word: "Update", phon: "อัปเดท", meaning: "อัปเดตข้อมูลให้เป็นปัจจุบัน" },
+  { word: "Virtual", phon: "เวอร์ชวล", meaning: "เสมือนจริง" },
+  { word: "Wi-Fi", phon: "ไวไฟ", meaning: "ระบบเชื่อมต่ออินเทอร์เน็ตไร้สาย" },
+  { word: "Actor", phon: "แอคเทอะ", meaning: "นักแสดงชาย" },
+  { word: "Actress", phon: "แอคเทรส", meaning: "นักแสดงหญิง" },
+  { word: "Artist", phon: "อาร์ทิสท์", meaning: "ศิลปิน" },
+  { word: "Author", phon: "ออเธอะ", meaning: "นักเขียน" },
+  { word: "Baker", phon: "เบเคอะ", meaning: "คนทำขนมปัง" },
+  { word: "Barber", phon: "บาร์เบอะ", meaning: "ช่างตัดผมชาย" },
+  { word: "Business", phon: "บิสเนส", meaning: "ธุรกิจ" },
+  { word: "Carpenter", phon: "คาร์เพนเทอะ", meaning: "ช่างไม้" },
+  { word: "Citizen", phon: "ซิทิเซน", meaning: "พลเมือง" },
+  { word: "Community", phon: "คอมมิวนิตี", meaning: "ชุมชน" },
+  { word: "Company", phon: "คอมพานี", meaning: "บริษัท" },
+  { word: "Culture", phon: "คัลเชอะ", meaning: "วัฒนธรรม" },
+  { word: "Designer", phon: "ดิไซเนอะ", meaning: "นักออกแบบ" },
+  { word: "Director", phon: "ไดเรคเทอะ", meaning: "ผู้กำกับ, ผู้อำนวยการ" },
+  { word: "Driver", phon: "ไดรเวอะ", meaning: "คนขับรถ" },
+  { word: "Economy", phon: "อิคอนโนมี", meaning: "เศรษฐกิจ" },
+  { word: "Editor", phon: "เอดิเทอะ", meaning: "บรรณาธิการ" },
+  { word: "Employee", phon: "เอ็มพลอยอี", meaning: "ลูกจ้าง" },
+  { word: "Employer", phon: "เอ็มพลอยเออะ", meaning: "นายจ้าง" },
+  { word: "Employment", phon: "เอ็มพลอยเมนท์", meaning: "การจ้างงาน" },
+  { word: "Engineer", phon: "เอนจิเนียร์", meaning: "วิศวกร" },
+  { word: "Farmer", phon: "ฟาร์เมอะ", meaning: "ชาวนา, เกษตรกร" },
+  { word: "Firefighter", phon: "ไฟร์ไฟท์เทอะ", meaning: "นักดับเพลิง" },
+  { word: "Flight attendant", phon: "ไฟลท์ อะเทนดันท์", meaning: "พนักงานต้อนรับบนเครื่องบิน" },
+  { word: "Government", phon: "กัฟเวิร์นเมนท์", meaning: "รัฐบาล" },
+  { word: "Hairdresser", phon: "แฮร์เดรสเซอะ", meaning: "ช่างทำผม" },
+  { word: "Income", phon: "อินคัม", meaning: "รายได้" },
+  { word: "Insurance", phon: "อินชัวรันส์", meaning: "การประกันภัย" },
+  { word: "Interview", phon: "อินเทอร์วิว", meaning: "การสัมภาษณ์" },
+  { word: "Journalist", phon: "เจอร์นัลลิสท์", meaning: "นักข่าว" },
+  { word: "Judge", phon: "จัดจ์", meaning: "ผู้พิพากษา" },
+  { word: "Law", phon: "ลอว์", meaning: "กฎหมาย" },
+  { word: "Lawyer", phon: "ลอเยอะ", meaning: "ทนายความ" },
+  { word: "Manager", phon: "แมนเนเจอร์", meaning: "ผู้จัดการ" },
+  { word: "Mechanic", phon: "มิแคนิก", meaning: "ช่างยนต์" },
+  { word: "Musician", phon: "มิวสิเชียน", meaning: "นักดนตรี" },
+  { word: "Occupation", phon: "ออคคิวเพชัน", meaning: "อาชีพ" },
+  { word: "Office", phon: "ออฟฟิศ", meaning: "สำนักงาน" },
+  { word: "Owner", phon: "โอเนอะ", meaning: "เจ้าของ" },
+  { word: "Photographer", phon: "ฟะทอกระเฟอะ", meaning: "ช่างภาพ" },
+  { word: "Pilot", phon: "ไพลอท", meaning: "นักบิน" },
+  { word: "Plumber", phon: "พลัมเมอะ", meaning: "ช่างประปา" },
+  { word: "Police officer", phon: "พะลิส ออฟฟิเซอร์", meaning: "เจ้าหน้าที่ตำรวจ" },
+  { word: "Politician", phon: "พอลิทิเชียน", meaning: "นักการเมือง" },
+  { word: "Population", phon: "พอพิวเลชัน", meaning: "ประชากร" },
+  { word: "Profession", phon: "พรุเฟชชัน", meaning: "วิชาชีพ" },
+  { word: "Programmer", phon: "โปรแกรมเมอะ", meaning: "นักเขียนโปรแกรม" },
+  { word: "Receptionist", phon: "รีเซพชันนิสท์", meaning: "พนักงานต้อนรับ" },
+  { word: "Reporter", phon: "รีพอร์ตเทอะ", meaning: "ผู้สื่อข่าว" },
+  { word: "Retire", phon: "รีไทร์", meaning: "เกษียณอายุ" },
+  { word: "Salary", phon: "แซลารี", meaning: "เงินเดือน" },
+  { word: "Salesperson", phon: "เซลส์เพอร์เซิน", meaning: "พนักงานขาย" },
+  { word: "Scientist", phon: "ไซเอนทิสท์", meaning: "นักวิทยาศาสตร์" },
+  { word: "Secretary", phon: "เซคระเทอรี", meaning: "เลขานุการ" },
+  { word: "Security guard", phon: "ซิคิวริที การ์ด", meaning: "เจ้าหน้าที่รักษาความปลอดภัย" },
+  { word: "Singer", phon: "สิงเออะ", meaning: "นักร้อง" },
+  { word: "Social", phon: "โซเชียล", meaning: "เกี่ยวกับสังคม" },
+  { word: "Society", phon: "โซไซเอะที", meaning: "สังคม" },
+  { word: "Soldier", phon: "โซลเจอร์", meaning: "ทหาร" },
+  { word: "Staff", phon: "สตาฟฟ์", meaning: "คณะผู้ทำงาน" },
+  { word: "Tax", phon: "แทร็กซ์", meaning: "ภาษี" },
+  { word: "Teacher", phon: "ทีเชอะ", meaning: "ครู" },
+  { word: "Tour guide", phon: "ทัวร์ ไกด์", meaning: "ผู้นำเที่ยว" },
+  { word: "Tradition", phon: "ทระดิชัน", meaning: "ประเพณี" },
+  { word: "Unemployment", phon: "อันเอ็มพลอยเมนท์", meaning: "การว่างงาน" },
+  { word: "Uniform", phon: "ยูนิฟอร์ม", meaning: "เครื่องแบบ" },
+  { word: "Volunteer", phon: "วอลันเทียร์", meaning: "อาสาสมัคร" },
+  { word: "Wage", phon: "เวดจ์", meaning: "ค่าจ้าง (รายวัน/รายชั่วโมง)" },
+  { word: "Worker", phon: "เวิร์คเกอะ", meaning: "คนงาน" },
+  { word: "Writer", phon: "ไรเทอะ", meaning: "นักเขียน" },
+  { word: "Apply", phon: "อะพลาย", meaning: "สมัครงาน" },
+  { word: "Career", phon: "คาเรียร์", meaning: "อาชีพ, หน้าที่การงาน" },
+  { word: "Colleague", phon: "คอลลีค", meaning: "เพื่อนร่วมงาน" },
+  { word: "Contract", phon: "คอนแทรคท์", meaning: "สัญญา" },
+  { word: "Crew", phon: "ครู", meaning: "ลูกเรือ, ทีมงาน" },
+  { word: "Earn", phon: "เอิร์น", meaning: "ได้รับรายได้" },
+  { word: "Experience", phon: "อิกสเปียเรียนซ์", meaning: "ประสบการณ์" },
+  { word: "Factory", phon: "แฟคทอรี", meaning: "โรงงาน" },
+  { word: "Hire", phon: "ไฮเออร์", meaning: "จ้างงาน" },
+  { word: "Industry", phon: "อินดัสทรี", meaning: "อุตสาหกรรม" },
+  { word: "Labor", phon: "เลเบอะ", meaning: "แรงงาน" },
+  { word: "Leader", phon: "ลีดเดอะ", meaning: "ผู้นำ" },
+  { word: "Meeting", phon: "มีททิง", meaning: "การประชุม" },
+  { word: "Position", phon: "พะซิชัน", meaning: "ตำแหน่งงาน" },
+  { word: "Promotion", phon: "พรุโมชัน", meaning: "การเลื่อนตำแหน่ง, การส่งเสริม" },
+  { word: "Quit", phon: "ควิท", meaning: "ลาออก" },
+  { word: "Skill", phon: "สกิล", meaning: "ทักษะ" },
+  { word: "Success", phon: "ซัคเซส", meaning: "ความสำเร็จ" },
+  { word: "Task", phon: "ทาสก์", meaning: "งาน, ภารกิจ" },
+  { word: "Modern", phon: "มอเดิร์น", meaning: "ทันสมัย" },
+  { word: "Agree", phon: "อะกรี", meaning: "เห็นด้วย" },
+  { word: "Disagree", phon: "ดิสอะกรี", meaning: "ไม่เห็นด้วย" },
+  { word: "Alive", phon: "อะไลฟ์", meaning: "มีชีวิตอยู่" },
+  { word: "Dead", phon: "เดด", meaning: "ตาย" },
+  { word: "Allow", phon: "อะเลา", meaning: "อนุญาต" },
+  { word: "Forbid", phon: "ฟอร์บิด", meaning: "ห้าม" },
+  { word: "Appear", phon: "อะเพียร์", meaning: "ปรากฏตัว" },
+  { word: "Disappear", phon: "ดิสอะเพียร์", meaning: "หายตัวไป" },
+  { word: "Arrive", phon: "อะรายฟ์", meaning: "มาถึง" },
+  { word: "Depart", phon: "ดิพาร์ท", meaning: "ออกเดินทาง" },
+  { word: "Artificial", phon: "อาร์ทิฟิเชียล", meaning: "เทียม, ประดิษฐ์ขึ้น" },
+  { word: "Natural", phon: "เนเชอรัล", meaning: "เป็นธรรมชาติ" },
+  { word: "Attack", phon: "อะแทค", meaning: "โจมตี" },
+  { word: "Defend", phon: "ดิเฟนด์", meaning: "ป้องกัน" },
+  { word: "Before", phon: "บิฟอร์", meaning: "ก่อน" },
+  { word: "After", phon: "แอฟเทอะ", meaning: "หลัง" },
+  { word: "Begin", phon: "บิกิน", meaning: "เริ่มต้น" },
+  { word: "Finish", phon: "ฟินิช", meaning: "ทำเสร็จ, สิ้นสุด" },
+  { word: "Behind", phon: "บิไฮนด์", meaning: "ข้างหลัง" },
+  { word: "In front of", phon: "อิน ฟรอนท์ ออฟ", meaning: "ข้างหน้า" },
+  { word: "Believe", phon: "บิลีฟ", meaning: "เชื่อ" },
+  { word: "Doubt", phon: "เดาท์", meaning: "สงสัย" },
+  { word: "Lend", phon: "เลนด์", meaning: "ให้ยืม" },
+  { word: "Bottom", phon: "บอททัม", meaning: "ด้านล่าง, ก้น" },
+  { word: "Top", phon: "ทอพ", meaning: "ด้านบน, ยอด" },
+  { word: "Cowardly", phon: "คาวเวิร์ดลี", meaning: "ขลาดกลัว" },
+  { word: "Dark", phon: "ดาร์ค", meaning: "มืด" },
+  { word: "Buy", phon: "บาย", meaning: "ซื้อ" },
+  { word: "Catch", phon: "แคทช์", meaning: "จับ" },
+  { word: "Throw", phon: "โธรว์", meaning: "ขว้าง, โยน" },
+  { word: "Certain", phon: "เซอร์เทน", meaning: "แน่นอน" },
+  { word: "Uncertain", phon: "อันเซอร์เทน", meaning: "ไม่แน่นอน" },
+  { word: "Close", phon: "โคลส", meaning: "ปิด, ใกล้ชิด" },
+  { word: "Open", phon: "โอเพน", meaning: "เปิด" },
+  { word: "Hot", phon: "ฮอท", meaning: "ร้อน" },
+  { word: "Combine", phon: "คอมไบน์", meaning: "รวมกัน" },
+  { word: "Separate", phon: "เซพพะเรท", meaning: "แยกจากกัน" },
+  { word: "Uncomfortable", phon: "อันคัมฟะทะเบิล", meaning: "ไม่สบาย" },
+  { word: "Common", phon: "คอมมอน", meaning: "ปกติ, ธรรมดา" },
+  { word: "Rare", phon: "แรร์", meaning: "หายาก" },
+  { word: "Complain", phon: "คอมเพลน", meaning: "บ่น, ร้องเรียน" },
+  { word: "Praise", phon: "เพรส", meaning: "ชมเชย" },
+  { word: "Complex", phon: "คอมเพล็กซ์", meaning: "ซับซ้อน" },
+  { word: "Simple", phon: "ซิมเพิล", meaning: "ง่ายๆ ไม่ซับซ้อน" },
+  { word: "Create", phon: "ครีเอท", meaning: "สร้างสรรค์" },
+  { word: "Destroy", phon: "ดิสทรอย", meaning: "ทำลาย" },
+  { word: "Cry", phon: "คราย", meaning: "ร้องไห้" },
+  { word: "Laugh", phon: "ลาฟ", meaning: "หัวเราะ" },
+  { word: "Deep", phon: "ดีพ", meaning: "ลึก" },
+  { word: "Shallow", phon: "แชลโลว์", meaning: "ตื้น" },
+  { word: "Difficult", phon: "ดิฟฟิคัลท์", meaning: "ยาก" },
+  { word: "Easy", phon: "อีซี", meaning: "ง่าย" },
+  { word: "Dry", phon: "ดราย", meaning: "แห้ง" },
+  { word: "Wet", phon: "เว็ท", meaning: "เปียก" },
+  { word: "Full", phon: "ฟูล", meaning: "เต็ม" },
+  { word: "Enter", phon: "เอนเทอะ", meaning: "เข้าไป" },
+  { word: "Exit", phon: "เอกซิท", meaning: "ออกไป" },
+  { word: "Fact", phon: "แฟคท์", meaning: "ความจริง" },
+  { word: "Fiction", phon: "ฟิคชัน", meaning: "เรื่องแต่ง, นิยาย" },
+  { word: "Succeed", phon: "ซัคซีด", meaning: "ประสบความสำเร็จ" },
+  { word: "Famous", phon: "เฟมัส", meaning: "มีชื่อเสียง" },
+  { word: "Unknown", phon: "อันโนน", meaning: "ไม่เป็นที่รู้จัก" },
+  { word: "Slow", phon: "สโลว์", meaning: "ช้า" },
+  { word: "Fat", phon: "แฟท", meaning: "อ้วน" },
+  { word: "Thin", phon: "ธิน", meaning: "ผอม" },
+  { word: "Find", phon: "ไฟนด์", meaning: "หาเจอ" },
+  { word: "Lose", phon: "ลูซ", meaning: "ทำหาย" },
+  { word: "Forget", phon: "ฟอร์เกต", meaning: "ลืม" },
+  { word: "Remember", phon: "รีเมมเบอะ", meaning: "จดจำ" },
+  { word: "Free", phon: "ฟรี", meaning: "อิสระ, ฟรี" },
+  { word: "Busy", phon: "บิซี", meaning: "ยุ่ง" },
+  { word: "Stingy", phon: "สตินจี", meaning: "ขี้เหนียว" }
+];
+
+// ════════════════════════════════════════════
+//  STORAGE HELPERS
+// ════════════════════════════════════════════
+const STORE_KEY = 'mton_v1';
+function loadStore() {
+  try { return JSON.parse(localStorage.getItem(STORE_KEY)) || {}; } catch { return {}; }
+}
+function saveStore(data) { localStorage.setItem(STORE_KEY, JSON.stringify(data)); }
+function getTodayKey() { return new Date().toISOString().slice(0, 10); }
+
+// ════════════════════════════════════════════
+//  DAILY WORD SELECTION (seeded by date)
+// ════════════════════════════════════════════
+function seededShuffle(arr, seed) {
+  const a = [...arr];
+  let s = seed;
+  for (let i = a.length - 1; i > 0; i--) {
+    s = (s * 1664525 + 1013904223) & 0xffffffff;
+    const j = Math.abs(s) % (i + 1);
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+function dateSeed(dateKey) {
+  return dateKey.replace(/-/g, '').split('').reduce((acc, c) => acc * 31 + c.charCodeAt(0), 0);
+}
+function getDailyWords(dateKey) {
+  const seed = dateSeed(dateKey);
+  return seededShuffle(allWords, seed).slice(0, 30);
+}
+
+// ════════════════════════════════════════════
+//  STATE
+// ════════════════════════════════════════════
+let todayKey, dailyWords, currentIdx, score, correct, wrong, mistakes, sessionDone;
+
+function initSession() {
+  todayKey = getTodayKey();
+  dailyWords = getDailyWords(todayKey);
+  currentIdx = 0;
+  score = 0;
+  correct = 0;
+  wrong = 0;
+  mistakes = [];
+  sessionDone = false;
+
+  const store = loadStore();
+  if (store[todayKey] && store[todayKey].done) {
+    sessionDone = true;
+    const rec = store[todayKey];
+    score = rec.score;
+    correct = rec.correct;
+    wrong = rec.wrong;
+    mistakes = rec.mistakes || [];
+  }
+}
+
+// ════════════════════════════════════════════
+//  UI UPDATES
+// ════════════════════════════════════════════
+function updateDateBadge() {
+  const d = new Date();
+  const days = ['อาทิตย์','จันทร์','อังคาร','พุธ','พฤหัสบดี','ศุกร์','เสาร์'];
+  document.getElementById('dateBadge').textContent =
+    `📅 วัน${days[d.getDay()]} ${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()+543}`;
+}
+
+function updateScoreUI() {
+  document.getElementById('scoreDisplay').textContent = score;
+  document.getElementById('correctCount').textContent = correct;
+  document.getElementById('wrongCount').textContent = wrong;
+  const done = correct + wrong;
+  const pct = done ? Math.round(correct/done*100) : 0;
+  document.getElementById('progressBar').style.width = (done/30*100) + '%';
+  document.getElementById('progressLabel').textContent = `คำที่ ${done} / 30`;
+  document.getElementById('accuracyLabel').textContent = done ? `ความแม่นยำ ${pct}%` : 'ความแม่นยำ —';
+  document.getElementById('wordNumber').textContent = `WORD ${done+1} / 30`;
+}
+
+// ════════════════════════════════════════════
+//  QUIZ LOGIC
+// ════════════════════════════════════════════
+function showWord() {
+  const word = dailyWords[currentIdx];
+  document.getElementById('wordDisplay').textContent = word.word;
+  document.getElementById('phonetic').textContent = word.phon ? '🔉 ' + word.phon : '';
+  renderOptions(word);
+}
+
+function renderOptions(word) {
+  const box = document.getElementById('optionsBox');
+  box.innerHTML = '';
+  let opts = [word.meaning];
+  const pool = allWords.filter(w => w.meaning !== word.meaning).sort(() => Math.random() - 0.5);
+  const used = new Set([word.meaning]);
+  for (let i = 0; i < pool.length && opts.length < 4; i++) {
+    if (!used.has(pool[i].meaning)) { opts.push(pool[i].meaning); used.add(pool[i].meaning); }
+  }
+  opts.sort(() => Math.random() - 0.5);
+  opts.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.textContent = opt;
+    btn.onclick = () => checkAnswer(opt, btn, word);
+    box.appendChild(btn);
+  });
+}
+
+function checkAnswer(selected, btn, word) {
+  document.querySelectorAll('.option').forEach(b => b.onclick = null);
+  document.querySelectorAll('.option').forEach(b => {
+    if (b.textContent === word.meaning) b.classList.add('correct');
+  });
+  if (selected === word.meaning) {
+    score += 10;
+    correct++;
+    showToast(`✓ ถูกต้อง! +10  👉 ${word.meaning}`, 'correct-toast');
+  } else {
+    btn.classList.add('wrong');
+    wrong++;
+    mistakes.push({ word: word.word, meaning: word.meaning, selected });
+    showToast(`✗ ผิด! คำตอบ: ${word.meaning}`, 'wrong-toast');
+  }
+  updateScoreUI();
+  setTimeout(() => {
+    currentIdx++;
+    if (currentIdx >= 30) finishSession();
+    else showWord();
+  }, 1400);
+}
+
+function skipWord() {
+  wrong++;
+  const word = dailyWords[currentIdx];
+  mistakes.push({ word: word.word, meaning: word.meaning, selected: '(ข้าม)' });
+  updateScoreUI();
+  currentIdx++;
+  if (currentIdx >= 30) finishSession();
+  else showWord();
+}
+
+function finishSession() {
+  sessionDone = true;
+  const store = loadStore();
+  const pct = Math.round(correct/30*100);
+  store[todayKey] = { score, correct, wrong, mistakes, pct, done: true, date: todayKey };
+  saveStore(store);
+
+  document.getElementById('quizCard').style.display = 'none';
+  document.getElementById('resultScreen').style.display = 'block';
+  document.getElementById('progressBar').style.width = '100%';
+  document.getElementById('progressLabel').textContent = 'คำที่ 30 / 30';
+  document.getElementById('accuracyLabel').textContent = `ความแม่นยำ ${pct}%`;
+
+  const emojis = pct >= 90 ? '🏆' : pct >= 70 ? '🎉' : pct >= 50 ? '💪' : '📚';
+  const titles = pct >= 90 ? 'ยอดเยี่ยมมาก!' : pct >= 70 ? 'ทำได้ดีมาก!' : pct >= 50 ? 'พยายามต่อไป!' : 'ต้องฝึกเพิ่มนะ!';
+  document.getElementById('resultEmoji').textContent = emojis;
+  document.getElementById('resultTitle').textContent = titles;
+  document.getElementById('resultScore').textContent = score + ' คะแนน';
+  document.getElementById('resultSub').textContent = `ถูก ${correct} / ผิด ${wrong} จาก 30 คำ`;
+}
+
+function replayToday() {
+  if (!confirm('เล่นซ้ำวันนี้? คะแนนเดิมจะถูกแทนที่')) return;
+  const store = loadStore();
+  delete store[todayKey];
+  saveStore(store);
+  currentIdx = 0; score = 0; correct = 0; wrong = 0; mistakes = []; sessionDone = false;
+  document.getElementById('finishBanner').classList.remove('show');
+  document.getElementById('resultScreen').style.display = 'none';
+  document.getElementById('mistakesList').style.display = 'none';
+  document.getElementById('quizCard').style.display = 'block';
+  updateScoreUI();
+  showWord();
+}
+
+function shareToLine() {
+  const pct = Math.round(correct/30*100);
+  const rank = pct >= 90 ? 'S' : pct >= 70 ? 'A' : pct >= 50 ? 'B' : 'C';
+  const text = `📚 ผลฝึกคำศัพท์ ม.ต้น วันนี้\n\n`
+    + `📅 ${document.getElementById('dateBadge').textContent}\n`
+    + `✅ ถูก: ${correct} คำ\n`
+    + `❌ ผิด: ${wrong} คำ\n`
+    + `🎯 ความแม่นยำ: ${pct}%\n`
+    + `⭐ Rank: ${rank}\n`
+    + `💯 คะแนน: ${score} คะแนน`;
+  const url = 'https://social-plugins.line.me/lineit/share?url='
+    + encodeURIComponent('https://example.app')
+    + '&text=' + encodeURIComponent(text);
+  window.open(url, '_blank');
+}
+
+function reviewMistakes() {
+  const el = document.getElementById('mistakesList');
+  const content = document.getElementById('mistakesContent');
+  if (el.style.display === 'none') {
+    el.style.display = 'block';
+    if (mistakes.length === 0) {
+      content.innerHTML = '<div style="text-align:center;color:var(--correct);padding:16px">ไม่มีคำที่ตอบผิดเลย! 🎉</div>';
+    } else {
+      content.innerHTML = mistakes.map(m => `
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:8px;">
+          <div style="font-family:'Space Mono',monospace;font-size:1rem;color:var(--text);font-weight:700;">${m.word}</div>
+          <div style="font-size:0.85rem;color:var(--correct);margin-top:4px;">✓ ${m.meaning}</div>
+          <div style="font-size:0.8rem;color:var(--wrong);margin-top:2px;">✗ คำตอบของคุณ: ${m.selected}</div>
+        </div>`).join('');
+    }
+  } else {
+    el.style.display = 'none';
+  }
+}
+
+// ════════════════════════════════════════════
+//  HISTORY
+// ════════════════════════════════════════════
+function renderHistory() {
+  const store = loadStore();
+  const entries = Object.values(store).filter(e => e.done).sort((a,b) => b.date.localeCompare(a.date));
+  const el = document.getElementById('historyList');
+  if (entries.length === 0) {
+    el.innerHTML = `<div class="empty-state"><div class="icon">📋</div><div>ยังไม่มีประวัติการทำ<br>เริ่มฝึกวันแรกได้เลย!</div></div>`;
+    return;
+  }
+  el.innerHTML = entries.map(e => {
+    const badge = e.pct >= 90 ? ['S', 'badge-s'] : e.pct >= 70 ? ['A', 'badge-a'] : e.pct >= 50 ? ['B', 'badge-b'] : ['C', 'badge-c'];
+    const d = new Date(e.date);
+    const dateStr = `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()+543}`;
+    return `
+      <div class="history-item">
+        <div>
+          <div class="history-date">${dateStr}</div>
+          <div class="history-name">วันละ 30 คำ</div>
+          <span class="history-badge ${badge[1]}">Rank ${badge[0]}</span>
+        </div>
+        <div class="history-right">
+          <div class="history-score">${e.score}</div>
+          <div class="history-detail">ถูก ${e.correct} / ${e.correct + e.wrong} • ${e.pct}%</div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function clearHistory() {
+  if (confirm('ล้างประวัติคะแนนทั้งหมด?')) {
+    localStorage.removeItem(STORE_KEY);
+    renderHistory();
+  }
+}
+
+// ════════════════════════════════════════════
+//  SPEECH
+// ════════════════════════════════════════════
+// โหลดรายชื่อเสียงไว้ล่วงหน้า (บางเบราว์เซอร์โหลดแบบ async)
+if ('speechSynthesis' in window) {
+  window.speechSynthesis.getVoices();
+  window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+}
+
+function speakEN(text) {
+  if (!('speechSynthesis' in window) || typeof SpeechSynthesisUtterance === 'undefined') {
+    showToast('⚠ อุปกรณ์/เบราว์เซอร์นี้ไม่รองรับการอ่านออกเสียง', 'wrong-toast');
+    return;
+  }
+  try {
+    window.speechSynthesis.cancel();
+    const doSpeak = () => {
+      const voices = window.speechSynthesis.getVoices();
+      const u = new SpeechSynthesisUtterance(text);
+      const en = voices.find(v => /en[-_]?US/i.test(v.lang)) || voices.find(v => /^en/i.test(v.lang));
+      if (en) u.voice = en;
+      u.lang = 'en-US';
+      u.rate = 0.85;
+      window.speechSynthesis.speak(u);
+    };
+    if (window.speechSynthesis.getVoices().length === 0) {
+      let spoken = false;
+      const once = () => { if (!spoken) { spoken = true; doSpeak(); } };
+      window.speechSynthesis.onvoiceschanged = once;
+      setTimeout(once, 300);
+    } else {
+      doSpeak();
+    }
+  } catch (e) {
+    showToast('⚠ เล่นเสียงไม่ได้', 'wrong-toast');
+  }
+}
+
+function speakWord() {
+  const word = dailyWords[currentIdx];
+  if (!word) return;
+  // 1) ในแอป Android ที่ติดตั้งปลั๊กอิน TextToSpeech
+  try {
+    const cap = window.Capacitor;
+    if (cap && cap.Plugins && cap.Plugins.TextToSpeech) {
+      cap.Plugins.TextToSpeech.speak({ text: word.word, lang: 'en-US', rate: 1.0 });
+      return;
+    }
+  } catch (e) {}
+  // 2) เบราว์เซอร์ / พรีวิว
+  speakEN(word.word);
+}
+
+// ════════════════════════════════════════════
+//  TOAST
+// ════════════════════════════════════════════
+let toastTimer;
+function showToast(msg, cls) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast ' + cls + ' show';
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 1800);
+}
+
+// ════════════════════════════════════════════
+//  TABS
+// ════════════════════════════════════════════
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', (tab==='quiz'&&i===0)||(tab==='history'&&i===1)));
+  document.getElementById('quizView').classList.toggle('active', tab === 'quiz');
+  document.getElementById('historyView').classList.toggle('active', tab === 'history');
+  if (tab === 'history') renderHistory();
+}
+
+// ════════════════════════════════════════════
+//  INIT
+// ════════════════════════════════════════════
+window.onload = () => {
+  updateDateBadge();
+  initSession();
+  updateScoreUI();
+
+  if (sessionDone) {
+    document.getElementById('finishBanner').classList.add('show');
+    document.getElementById('quizCard').style.display = 'none';
+    document.getElementById('resultScreen').style.display = 'block';
+    const pct = Math.round(correct/30*100);
+    const emojis = pct >= 90 ? '🏆' : pct >= 70 ? '🎉' : pct >= 50 ? '💪' : '📚';
+    document.getElementById('resultEmoji').textContent = emojis;
+    document.getElementById('resultTitle').textContent = 'ผลการทำวันนี้';
+    document.getElementById('resultScore').textContent = score + ' คะแนน';
+    document.getElementById('resultSub').textContent = `ถูก ${correct} / ผิด ${wrong} จาก 30 คำ`;
+    document.getElementById('progressBar').style.width = '100%';
+    document.getElementById('progressLabel').textContent = 'คำที่ 30 / 30';
+    document.getElementById('accuracyLabel').textContent = `ความแม่นยำ ${pct}%`;
+    const store = loadStore();
+    if (store[todayKey]) mistakes = store[todayKey].mistakes || [];
+  } else {
+    showWord();
+  }
+};
+</script>
+</body>
+</html>
