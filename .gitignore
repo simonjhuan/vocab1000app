@@ -8,6 +8,7 @@ key
 *.keystore
 jsk
 **/jsk
+keystore.properties
 
 # Android build outputs
 **/build/

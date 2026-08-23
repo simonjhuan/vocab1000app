@@ -6,6 +6,12 @@
       "runtimeExecutable": "python",
       "runtimeArgs": ["-m", "http.server", "8753", "--directory", "D:\\AndroidStudioProjects\\vocab1000app\\vocab_by_grade\\M1"],
       "port": 8753
+    },
+    {
+      "name": "vocab1000",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "http.server", "8754", "--directory", "D:\\AndroidStudioProjects\\vocab1000app\\vocab1000"],
+      "port": 8754
     }
   ]
 }
