@@ -72,7 +72,7 @@ workflows:
           - vocab_m1_appstore
         certificates:
           - distribution
-      node: 20
+      node: 22
       xcode: latest
       vars:
         CAP_CONFIG: "capacitor.config.m1.ts"
@@ -97,7 +97,7 @@ workflows:
           - vocab_m2_appstore
         certificates:
           - distribution
-      node: 20
+      node: 22
       xcode: latest
       vars:
         CAP_CONFIG: "capacitor.config.m2.ts"
@@ -122,7 +122,7 @@ workflows:
           - vocab_m3_appstore
         certificates:
           - distribution
-      node: 20
+      node: 22
       xcode: latest
       vars:
         CAP_CONFIG: "capacitor.config.m3.ts"
@@ -147,7 +147,7 @@ workflows:
           - gatpat_appstore
         certificates:
           - distribution
-      node: 20
+      node: 22
       xcode: latest
       vars:
         CAP_CONFIG: "capacitor.config.gatpat.ts"
@@ -172,7 +172,7 @@ workflows:
           - vocab1000_appstore
         certificates:
           - distribution
-      node: 20
+      node: 22
       xcode: latest
       vars:
         CAP_CONFIG: "capacitor.config.vocab1000.ts"
