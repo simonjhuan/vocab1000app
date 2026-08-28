@@ -15,6 +15,9 @@
 #
 # This account's Distribution certs are Codemagic-managed → signing MUST use Form 2
 # (`provisioning_profiles` + `certificates`), never Form 1 (`distribution_type` + `bundle_identifier`).
+# 3 Distribution certs exist (Apple's cap — do NOT create another). Codemagic identity
+# `distribution` = the cert expiring 2027-07-17. Create each provisioning profile against
+# that cert.
 
 definitions:
   triggering: &triggering
@@ -76,7 +79,7 @@ workflows:
         APP_DIR: "ios/M1/App"
         XCODE_PROJECT: "ios/M1/App/App.xcodeproj"
         BUNDLE_ID: "com.vocab.m1"
-        APP_STORE_APPLE_ID: 0000000000   # TODO: numeric Apple ID of the App Store Connect record
+        APP_STORE_APPLE_ID: 6806248798
     triggering: *triggering
     scripts: [*npm_ci, *cap_sync, *use_profiles, *bump_build, *build_ipa]
     artifacts: *artifacts
@@ -101,7 +104,7 @@ workflows:
         APP_DIR: "ios/M2/App"
         XCODE_PROJECT: "ios/M2/App/App.xcodeproj"
         BUNDLE_ID: "com.vocab.m2"
-        APP_STORE_APPLE_ID: 0000000000   # TODO
+        APP_STORE_APPLE_ID: 6806250464
     triggering: *triggering
     scripts: [*npm_ci, *cap_sync, *use_profiles, *bump_build, *build_ipa]
     artifacts: *artifacts
@@ -126,7 +129,7 @@ workflows:
         APP_DIR: "ios/M3/App"
         XCODE_PROJECT: "ios/M3/App/App.xcodeproj"
         BUNDLE_ID: "com.vocab.m3"
-        APP_STORE_APPLE_ID: 0000000000   # TODO
+        APP_STORE_APPLE_ID: 6806251172
     triggering: *triggering
     scripts: [*npm_ci, *cap_sync, *use_profiles, *bump_build, *build_ipa]
     artifacts: *artifacts
@@ -151,7 +154,7 @@ workflows:
         APP_DIR: "ios/gatpat/App"
         XCODE_PROJECT: "ios/gatpat/App/App.xcodeproj"
         BUNDLE_ID: "com.gatpat.dailywords"   # iOS only — Android/Play stays com.vocab1000app
-        APP_STORE_APPLE_ID: 0000000000   # TODO
+        APP_STORE_APPLE_ID: 6806252920
     triggering: *triggering
     scripts: [*npm_ci, *cap_sync, *use_profiles, *bump_build, *build_ipa]
     artifacts: *artifacts
@@ -176,7 +179,7 @@ workflows:
         APP_DIR: "ios/vocab1000/App"
         XCODE_PROJECT: "ios/vocab1000/App/App.xcodeproj"
         BUNDLE_ID: "com.vocab1000.app"
-        APP_STORE_APPLE_ID: 0000000000   # TODO
+        APP_STORE_APPLE_ID: 6806255589
     triggering: *triggering
     scripts: [*npm_ci, *cap_sync, *use_profiles, *bump_build, *build_ipa]
     artifacts: *artifacts
