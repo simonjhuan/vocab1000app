@@ -11,7 +11,7 @@
 #   4. Codemagic → Team settings → Code signing identities → iOS provisioning profiles →
 #      Upload it → set its Reference name to the value in `provisioning_profiles` below.
 #   5. Codemagic → Team settings → Integrations → Developer Portal: an App Store Connect
-#      API key named `codemagic_asc_api_key` must exist (reused by every workflow).
+#      API key named `codemagic_api_key` must exist (reused by every workflow).
 #
 # This account's Distribution certs are Codemagic-managed → signing MUST use Form 2
 # (`provisioning_profiles` + `certificates`), never Form 1 (`distribution_type` + `bundle_identifier`).
@@ -65,7 +65,7 @@ workflows:
     max_build_duration: 60
     instance_type: mac_mini_m2
     integrations:
-      app_store_connect: codemagic_asc_api_key
+      app_store_connect: codemagic_api_key
     environment:
       ios_signing:
         provisioning_profiles:
@@ -90,7 +90,7 @@ workflows:
     max_build_duration: 60
     instance_type: mac_mini_m2
     integrations:
-      app_store_connect: codemagic_asc_api_key
+      app_store_connect: codemagic_api_key
     environment:
       ios_signing:
         provisioning_profiles:
@@ -115,7 +115,7 @@ workflows:
     max_build_duration: 60
     instance_type: mac_mini_m2
     integrations:
-      app_store_connect: codemagic_asc_api_key
+      app_store_connect: codemagic_api_key
     environment:
       ios_signing:
         provisioning_profiles:
@@ -140,7 +140,7 @@ workflows:
     max_build_duration: 60
     instance_type: mac_mini_m2
     integrations:
-      app_store_connect: codemagic_asc_api_key
+      app_store_connect: codemagic_api_key
     environment:
       ios_signing:
         provisioning_profiles:
@@ -165,7 +165,7 @@ workflows:
     max_build_duration: 60
     instance_type: mac_mini_m2
     integrations:
-      app_store_connect: codemagic_asc_api_key
+      app_store_connect: codemagic_api_key
     environment:
       ios_signing:
         provisioning_profiles:
