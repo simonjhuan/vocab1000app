@@ -34,10 +34,10 @@
                 android:resource="@xml/file_paths"></meta-data>
         </provider>
 
-        <!-- AdMob App ID (TODO: replace with this app's real AdMob App ID from the console). Google TEST id shown. -->
+        <!-- AdMob App ID — Vocab M3 (Android), real id from AdMob console -->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-3940256099942544~3347511713" />
+            android:value="ca-app-pub-5804107706055854~4148732173" />
     </application>
 
     <!-- Permissions -->

@@ -75,14 +75,18 @@ applicationId ใน build.gradle เอง ปัญหานี้เลยไ
 นับจากติดตั้ง** (เก็บ timestamp ใน localStorage `admob_install_ts`) แล้วค่อยโชว์
 ADAPTIVE_BANNER ที่ล่างจอ เปิดบนเว็บ/ไม่มีปลั๊กอิน = no-op
 
-**ตอนนี้ยังเป็น Google TEST ids** ต้องแทนที่ด้วย id จริงจาก AdMob console (สร้างแบบ
-"แอปยังไม่เผยแพร่") 3 จุดต่อแอป:
+**ใช้ id จริงจาก AdMob console แล้ว (2026-08-28)** — สร้าง 10 AdMob apps + 10 banner
+units (Android+iOS อย่างละ 5) publisher id `ca-app-pub-5804107706055854`
+`CONFIG.isTesting = false` ทุกไฟล์แล้ว id 3 จุดต่อแอป:
 
-| id | ไฟล์ที่ต้องแก้ |
+| id | ไฟล์ |
 |---|---|
 | Android App ID (`~`) | `android-<app>/app/src/main/AndroidManifest.xml` → `com.google.android.gms.ads.APPLICATION_ID` |
 | iOS App ID (`~`) | `ios/<app>/App/App/Info.plist` → `GADApplicationIdentifier` |
-| Banner unit (`/`) Android+iOS | `<webdir>/index.html` → `CONFIG.androidBannerId` / `CONFIG.iosBannerId` (+ ตั้ง `CONFIG.isTesting = false`) |
+| Banner unit (`/`) Android+iOS | `<webdir>/index.html` → `CONFIG.androidBannerId` / `CONFIG.iosBannerId` |
+
+AdMob จะขึ้นสถานะ "ต้องตรวจสอบ / Verify app" จนกว่าแต่ละแอปจะเผยแพร่บนสโตร์และยืนยัน
+listing — ระหว่างนั้นโฆษณาจริงอาจว่าง/จำกัด เป็นเรื่องปกติ
 
 **ผลกระทบต่อ Store:** AdMob เพิ่ม permission `AD_ID` บน Android อัตโนมัติ → ต้องอัปเดต
 Play Console → Data safety (เก็บ Advertising ID) และ App Store → App Privacy ก่อนส่งอัปเดต
