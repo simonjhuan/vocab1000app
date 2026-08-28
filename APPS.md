@@ -10,18 +10,30 @@
 
 ## ตารางแอปทั้งหมด
 
-| ชื่อแอป (Play Store) | โฟลเดอร์ Android | โฟลเดอร์ iOS | applicationId | Launcher | Capacitor config | versionCode ล่าสุด |
-|---|---|---|---|---|---|---|
-| **GAT-PAT Daily Words** | `android-gatpat` | `ios-gatpat` | `com.vocab1000app` | `เปิด-GAT-PAT.bat` | `capacitor.config.gatpat.ts` | 2 |
-| **Vocab M1** (ศัพท์ ม.1) | `android-M1` | `ios-M1` | `com.vocab.m1` | `เปิด-M1.bat` | `capacitor.config.m1.ts` | 2 |
-| **Vocab M2** (ศัพท์ ม.2) | `android-M2` | `ios-M2` | `com.vocab.m2` | `เปิด-M2.bat` | `capacitor.config.m2.ts` | 2 |
-| **Vocab M3** (ศัพท์ ม.3) | `android-M3` | `ios-M3` | ⚠️ ดูหมายเหตุ | `เปิด-M3.bat` | `capacitor.config.m3.ts` | 2 |
-| **Vocab1000** (Vocab Mat Ton) | `android-vocab1000` | `ios-vocab1000` | `com.vocab1000.app` | `เปิด-Vocab1000.bat` | `capacitor.config.vocab1000.ts` | 3 |
+| ชื่อแอป (Play Store) | โฟลเดอร์ Android | โฟลเดอร์ iOS | applicationId (Android) | Bundle ID (iOS) | Launcher | Capacitor config | versionCode ล่าสุด |
+|---|---|---|---|---|---|---|---|
+| **GAT-PAT Daily Words** | `android-gatpat` | `ios/gatpat` | `com.vocab1000app` | ⚠️ `com.gatpat.dailywords` (คนละตัวกับ Android) | `เปิด-GAT-PAT.bat` | `capacitor.config.gatpat.ts` | 2 |
+| **Vocab M1** (ศัพท์ ม.1) | `android-M1` | `ios/M1` | `com.vocab.m1` | `com.vocab.m1` | `เปิด-M1.bat` | `capacitor.config.m1.ts` | 2 |
+| **Vocab M2** (ศัพท์ ม.2) | `android-M2` | `ios/M2` | `com.vocab.m2` | `com.vocab.m2` | `เปิด-M2.bat` | `capacitor.config.m2.ts` | 2 |
+| **Vocab M3** (ศัพท์ ม.3) | `android-M3` | `ios/M3` | `com.vocab.moo3` ⚠️ | `com.vocab.m3` | `เปิด-M3.bat` | `capacitor.config.m3.ts` | 2 |
+| **Vocab1000** (Vocab Mat Ton) | `android-vocab1000` | `ios/vocab1000` | `com.vocab1000.app` | `com.vocab1000.app` | `เปิด-Vocab1000.bat` | `capacitor.config.vocab1000.ts` | 3 |
 
-**หมายเหตุ:** โฟลเดอร์ `ios-*` ทั้งหมด (ยกเว้น `ios-M1` ที่มีอยู่ก่อนแล้ว) ถูกสร้างเมื่อ
-2026-07-30 ด้วย `npx cap add ios` — ยังไม่เคย build/sign จริง ต้องเปิดบน macOS
-(Xcode) เพื่อ build ก่อน สคริปต์ `เปิด-*.bat` ปัจจุบัน sync แค่ `android` ยังไม่ได้
-เพิ่มขั้นตอน sync ios ให้อัตโนมัติ
+**GAT-PAT iOS bundle id ≠ Android:** iOS ใช้ `com.gatpat.dailywords` (ตั้งใน `ios/gatpat/App/App.xcodeproj`
+เท่านั้น) เพื่อเลี่ยงชนสายตากับ `com.vocab1000.app` ของ Vocab1000 — ส่วน Android/Play ยังเป็น
+`com.vocab1000app` เหมือนเดิม `capacitor.config.gatpat.ts` `appId` ยังเป็น `com.vocab1000app`
+(Capacitor ไม่ยุ่งกับ `PRODUCT_BUNDLE_IDENTIFIER` ใน pbxproj หลังสร้างโปรเจกต์แล้ว จึงไม่ชนกัน)
+
+**หมายเหตุ:** โปรเจกต์ iOS ทั้ง 5 ตัวย้ายมารวมไว้ใต้โฟลเดอร์เดียว `ios/` แล้ว
+(2026-08-28) เพื่อกันสับสนกับโฟลเดอร์ `android-*` ที่ root — เช่น `ios/M1`, `ios/gatpat`
+เดิมชื่อ `ios-M1`, `ios-gatpat` เอกสาร/สคริปต์เก่าที่อ้าง `ios-*` ให้เข้าใจว่าหมายถึง
+`ios/*` ตัวเดียวกัน ค่า `ios.path` ใน `capacitor.config.*.ts` และ `XCODE_PROJECT` ใน
+`codemagic.yaml` แก้ให้ตรงพาธใหม่แล้ว
+
+โฟลเดอร์เหล่านี้ (ยกเว้น `ios/M1` ที่มีอยู่ก่อนแล้ว) ถูกสร้างเมื่อ 2026-07-30 ด้วย
+`npx cap add ios` — ยังไม่เคย build/sign จริง ต้องเปิดบน macOS (Xcode) เพื่อ build ก่อน
+รัน `npx cap sync ios` บน macOS ครั้งแรกจะ regenerate `App/CapApp-SPM/Package.swift`
+(ไฟล์นี้ Capacitor เป็นคนจัดการเอง) ให้พาธ relative ไป `node_modules` ถูกต้องตามตำแหน่ง
+ใหม่ สคริปต์ `เปิด-*.bat` ปัจจุบัน sync แค่ `android` ยังไม่ได้เพิ่มขั้นตอน sync ios ให้อัตโนมัติ
 
 ## ⚠️ จุดที่เคยงง / ต้องระวังเป็นพิเศษ
 
@@ -56,3 +68,25 @@ applicationId ใน build.gradle เอง ปัญหานี้เลยไ
 ไฟล์นี้คือ "working copy" ที่ถูกทับด้วย `เปิด-*.bat` ทุกครั้งที่เปิดแอปใดแอปหนึ่ง —
 เนื้อหาข้างในตอนนี้จะเป็นของแอปล่าสุดที่เปิด ไม่ใช่ค่าคงที่ อย่ายึดเป็นหลักว่าแอปไหน
 "active" ให้ดูจากว่าเพิ่งรัน `เปิด-*.bat` ตัวไหนแทน
+
+## AdMob banner (เพิ่ม 2026-08-28)
+
+ทั้ง 5 แอปมี AdMob banner (native) ผ่าน `@capacitor-community/admob` — **ซ่อน 15 วันแรก
+นับจากติดตั้ง** (เก็บ timestamp ใน localStorage `admob_install_ts`) แล้วค่อยโชว์
+ADAPTIVE_BANNER ที่ล่างจอ เปิดบนเว็บ/ไม่มีปลั๊กอิน = no-op
+
+**ตอนนี้ยังเป็น Google TEST ids** ต้องแทนที่ด้วย id จริงจาก AdMob console (สร้างแบบ
+"แอปยังไม่เผยแพร่") 3 จุดต่อแอป:
+
+| id | ไฟล์ที่ต้องแก้ |
+|---|---|
+| Android App ID (`~`) | `android-<app>/app/src/main/AndroidManifest.xml` → `com.google.android.gms.ads.APPLICATION_ID` |
+| iOS App ID (`~`) | `ios/<app>/App/App/Info.plist` → `GADApplicationIdentifier` |
+| Banner unit (`/`) Android+iOS | `<webdir>/index.html` → `CONFIG.androidBannerId` / `CONFIG.iosBannerId` (+ ตั้ง `CONFIG.isTesting = false`) |
+
+**ผลกระทบต่อ Store:** AdMob เพิ่ม permission `AD_ID` บน Android อัตโนมัติ → ต้องอัปเดต
+Play Console → Data safety (เก็บ Advertising ID) และ App Store → App Privacy ก่อนส่งอัปเดต
+
+**แก้พลอยได้:** `vocab1000/index.html` เดิมเรียก `../capacitor.js` (พาธผิด อยู่ที่ web root
+ต้องเป็น `capacitor.js`) — แก้แล้ว มิฉะนั้นปลั๊กอิน Capacitor (รวม TTS + AdMob) ไม่โหลด
+ในแอป Vocab1000

@@ -1,56 +1,183 @@
+# iOS → TestFlight for all 5 apps. Build one at a time from the Codemagic UI
+# (or push to main to build every workflow).
+#
+# BEFORE THE FIRST BUILD OF EACH APP (see C:\Users\maew0\Documents\codemagic-appstore-checklist.md):
+#   1. Apple Developer Portal → Identifiers → register the Bundle ID (must match BUNDLE_ID below).
+#   2. App Store Connect → Apps → New App with that Bundle ID → note the numeric
+#      "Apple ID" (App Information) → put it in APP_STORE_APPLE_ID below.
+#   3. Apple Developer Portal → Profiles → + → App Store Connect → pick the App ID +
+#      the Distribution cert that matches the Codemagic identity `distribution` →
+#      Generate → Download the .mobileprovision.
+#   4. Codemagic → Team settings → Code signing identities → iOS provisioning profiles →
+#      Upload it → set its Reference name to the value in `provisioning_profiles` below.
+#   5. Codemagic → Team settings → Integrations → Developer Portal: an App Store Connect
+#      API key named `codemagic_asc_api_key` must exist (reused by every workflow).
+#
+# This account's Distribution certs are Codemagic-managed → signing MUST use Form 2
+# (`provisioning_profiles` + `certificates`), never Form 1 (`distribution_type` + `bundle_identifier`).
+
+definitions:
+  triggering: &triggering
+    events:
+      - push
+    branch_patterns:
+      - pattern: main
+        include: true
+  scripts:
+    npm_ci: &npm_ci
+      name: Install npm dependencies
+      script: npm ci
+    cap_sync: &cap_sync
+      name: Select Capacitor config + sync iOS
+      script: |
+        set -e
+        cp "$CAP_CONFIG" capacitor.config.ts
+        npx cap sync ios
+    use_profiles: &use_profiles
+      name: Set up code signing
+      script: xcode-project use-profiles
+    bump_build: &bump_build
+      name: Increment build number from TestFlight
+      script: |
+        set -e
+        cd "$CM_BUILD_DIR/$APP_DIR"
+        LATEST=$(app-store-connect get-latest-testflight-build-number "$APP_STORE_APPLE_ID" 2>/dev/null || echo 0)
+        agvtool new-version -all $((LATEST + 1))
+    build_ipa: &build_ipa
+      name: Build ipa
+      script: xcode-project build-ipa --project "$XCODE_PROJECT" --scheme "App"
+  artifacts: &artifacts
+    - build/ios/ipa/*.ipa
+    - /tmp/xcodebuild_logs/*.log
+  publishing: &publishing
+    app_store_connect:
+      auth: integration
+      submit_to_testflight: true
+      submit_to_app_store: false
+
 workflows:
-  m1-ios-app-store:
-    name: Vocab M1 - iOS App Store
+
+  m1-ios:
+    name: Vocab M1 — iOS TestFlight
     max_build_duration: 60
     instance_type: mac_mini_m2
     integrations:
-      app_store_connect: codemagic_asc_api_key   # name of the App Store Connect API key you add in Codemagic > Teams > Integrations
+      app_store_connect: codemagic_asc_api_key
     environment:
       ios_signing:
-        distribution_type: app_store
-        bundle_identifier: com.vocab.m1
-      vars:
-        XCODE_PROJECT: "ios-M1/App/App.xcodeproj"
-        XCODE_SCHEME: "App"
-        APP_STORE_APPLE_ID: 0000000000   # replace with the numeric Apple ID of the App Store Connect app record
+        provisioning_profiles:
+          - vocab_m1_appstore
+        certificates:
+          - distribution
       node: 20
-    triggering:
-      events:
-        - push
-      branch_patterns:
-        - pattern: main
-          include: true
-    scripts:
-      - name: Install npm dependencies
-        script: npm ci
+      xcode: latest
+      vars:
+        CAP_CONFIG: "capacitor.config.m1.ts"
+        APP_DIR: "ios/M1/App"
+        XCODE_PROJECT: "ios/M1/App/App.xcodeproj"
+        BUNDLE_ID: "com.vocab.m1"
+        APP_STORE_APPLE_ID: 0000000000   # TODO: numeric Apple ID of the App Store Connect record
+    triggering: *triggering
+    scripts: [*npm_ci, *cap_sync, *use_profiles, *bump_build, *build_ipa]
+    artifacts: *artifacts
+    publishing: *publishing
 
-      - name: Select M1 Capacitor config
-        script: cp capacitor.config.m1.ts capacitor.config.ts
+  m2-ios:
+    name: Vocab M2 — iOS TestFlight
+    max_build_duration: 60
+    instance_type: mac_mini_m2
+    integrations:
+      app_store_connect: codemagic_asc_api_key
+    environment:
+      ios_signing:
+        provisioning_profiles:
+          - vocab_m2_appstore
+        certificates:
+          - distribution
+      node: 20
+      xcode: latest
+      vars:
+        CAP_CONFIG: "capacitor.config.m2.ts"
+        APP_DIR: "ios/M2/App"
+        XCODE_PROJECT: "ios/M2/App/App.xcodeproj"
+        BUNDLE_ID: "com.vocab.m2"
+        APP_STORE_APPLE_ID: 0000000000   # TODO
+    triggering: *triggering
+    scripts: [*npm_ci, *cap_sync, *use_profiles, *bump_build, *build_ipa]
+    artifacts: *artifacts
+    publishing: *publishing
 
-      - name: Sync Capacitor iOS project
-        script: npx cap sync ios
+  m3-ios:
+    name: Vocab M3 — iOS TestFlight
+    max_build_duration: 60
+    instance_type: mac_mini_m2
+    integrations:
+      app_store_connect: codemagic_asc_api_key
+    environment:
+      ios_signing:
+        provisioning_profiles:
+          - vocab_m3_appstore
+        certificates:
+          - distribution
+      node: 20
+      xcode: latest
+      vars:
+        CAP_CONFIG: "capacitor.config.m3.ts"
+        APP_DIR: "ios/M3/App"
+        XCODE_PROJECT: "ios/M3/App/App.xcodeproj"
+        BUNDLE_ID: "com.vocab.m3"
+        APP_STORE_APPLE_ID: 0000000000   # TODO
+    triggering: *triggering
+    scripts: [*npm_ci, *cap_sync, *use_profiles, *bump_build, *build_ipa]
+    artifacts: *artifacts
+    publishing: *publishing
 
-      - name: Set up code signing certificate + provisioning profile
-        script: |
-          xcode-project use-profiles
+  gatpat-ios:
+    name: GAT-PAT Daily Words — iOS TestFlight
+    max_build_duration: 60
+    instance_type: mac_mini_m2
+    integrations:
+      app_store_connect: codemagic_asc_api_key
+    environment:
+      ios_signing:
+        provisioning_profiles:
+          - gatpat_appstore
+        certificates:
+          - distribution
+      node: 20
+      xcode: latest
+      vars:
+        CAP_CONFIG: "capacitor.config.gatpat.ts"
+        APP_DIR: "ios/gatpat/App"
+        XCODE_PROJECT: "ios/gatpat/App/App.xcodeproj"
+        BUNDLE_ID: "com.gatpat.dailywords"   # iOS only — Android/Play stays com.vocab1000app
+        APP_STORE_APPLE_ID: 0000000000   # TODO
+    triggering: *triggering
+    scripts: [*npm_ci, *cap_sync, *use_profiles, *bump_build, *build_ipa]
+    artifacts: *artifacts
+    publishing: *publishing
 
-      - name: Increment build number
-        script: |
-          cd $XCODE_PROJECT/..
-          agvtool new-version -all $(($(app-store-connect get-latest-app-store-build-number "$APP_STORE_APPLE_ID") + 1))
-
-      - name: Build ipa for distribution
-        script: |
-          xcode-project build-ipa \
-            --project "$XCODE_PROJECT" \
-            --scheme "$XCODE_SCHEME"
-
-    artifacts:
-      - build/ios/ipa/*.ipa
-      - /tmp/xcodebuild_logs/*.log
-
-    publishing:
-      app_store_connect:
-        auth: integration
-        submit_to_testflight: true
-        submit_to_app_store: false
+  vocab1000-ios:
+    name: Vocab1000 — iOS TestFlight
+    max_build_duration: 60
+    instance_type: mac_mini_m2
+    integrations:
+      app_store_connect: codemagic_asc_api_key
+    environment:
+      ios_signing:
+        provisioning_profiles:
+          - vocab1000_appstore
+        certificates:
+          - distribution
+      node: 20
+      xcode: latest
+      vars:
+        CAP_CONFIG: "capacitor.config.vocab1000.ts"
+        APP_DIR: "ios/vocab1000/App"
+        XCODE_PROJECT: "ios/vocab1000/App/App.xcodeproj"
+        BUNDLE_ID: "com.vocab1000.app"
+        APP_STORE_APPLE_ID: 0000000000   # TODO
+    triggering: *triggering
+    scripts: [*npm_ci, *cap_sync, *use_profiles, *bump_build, *build_ipa]
+    artifacts: *artifacts
+    publishing: *publishing

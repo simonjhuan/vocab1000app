@@ -5,7 +5,7 @@ const config: CapacitorConfig = {
   appName: 'Vocab M1',
   webDir: 'vocab_by_grade/M1',
   android: { path: 'android-M1' },
-  ios: { path: 'ios-M1' }
+  ios: { path: 'ios/M1' }
 };
 
 export default config;

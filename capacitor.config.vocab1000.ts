@@ -5,7 +5,7 @@ const config: CapacitorConfig = {
   appName: 'Vocab Mat Ton',
   webDir: 'vocab1000',
   android: { path: 'android-vocab1000' },
-  ios: { path: 'ios-vocab1000' }
+  ios: { path: 'ios/vocab1000' }
 };
 
 export default config;

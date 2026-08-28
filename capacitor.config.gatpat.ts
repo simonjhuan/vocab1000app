@@ -5,7 +5,7 @@ const config: CapacitorConfig = {
   appName: 'GAT-PAT Daily Words',
   webDir: 'www',
   android: { path: 'android-gatpat' },
-  ios: { path: 'ios-gatpat' }
+  ios: { path: 'ios/gatpat' }
 };
 
 export default config;
