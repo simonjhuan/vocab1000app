@@ -8,6 +8,42 @@
 เพราะแต่ละ bat จะ copy `capacitor.config.*.ts` ที่ถูกต้องไปทับ `capacitor.config.ts`
 ที่ root ก่อนเปิด ถ้าเปิดตรงๆ config ที่ root อาจเป็นของแอปอื่นค้างอยู่
 
+## ⚠️ 2026-09-02 — iOS รวมเป็นแอปเดียว (Apple แจ้ง spam)
+
+Apple มองว่า 5 แอปนี้เป็น spam (หน้าตา/คอนเซปต์เหมือนกัน ต่างแค่ชุดคำ) จึงรวม **ฝั่ง iOS**
+เป็นแอปเดียว มี dropdown เลือกชุดคำศัพท์ในแอป:
+
+| ส่วน | ค่า |
+|---|---|
+| Web dir | `app/` — `app/index.html` (UI จาก `vocab1000/index.html`) + `app/data/{mton,m1,m2,m3,gatpat}.js` (โหลดทีละชุด) |
+| Capacitor config | `capacitor.config.app.ts` (แยกไฟล์ ไม่ยุ่งกับ root working-copy ของฝั่ง Android) |
+| iOS project | `ios/app` (คัดลอกจาก `ios/vocab1000` เดิม) |
+| Bundle ID | `com.simonjhuan.vocabdaily` — register Apple แล้ว 2026-09-02 (ที่ตั้งใจไว้ `com.vocabdaily.app` โดนจองทั่วโลก) |
+| ชื่อ on-device | `ศัพท์อังกฤษ ม.ต้น` (CFBundleDisplayName / Capacitor appName) |
+| App Store listing | ชื่อ **ศัพท์อังกฤษ ม.ต้น–GAT-PAT**, Apple ID **6807688657** (สร้าง 2026-09-02, Prepare for Submission) — ใส่ใน `codemagic.yaml` แล้ว |
+| Provisioning profile | `vocab_merged_appstore` — สร้างใน Apple portal + **อัปโหลดเข้า Codemagic แล้ว** (Personal Account → Settings → Code signing identities → iOS provisioning profiles, Reference name `vocab_merged_appstore`). Certificate จับคู่ขึ้นเขียว = ตรงกับ Codemagic identity `distribution` (cert exp 2027-07-17) |
+| Codemagic | 1 workflow `vocab-ios` (ลบ `m1-ios`…`vocab1000-ios`) — profile ref `vocab_merged_appstore`, cert `distribution`, `APP_STORE_APPLE_ID: 6807688657`. บัญชี Codemagic ที่มีโปรเจกต์ = **`juanjuan0000009@gmail.com`** (Personal Account, ไม่มี team) — app id เก่า `6a91909a56eb6be4d4d98470` เข้าไม่ได้/อาจถูกลบ ให้ re-add จาก repo |
+| AdMob | AdMob app **`ศัพท์อังกฤษ ม.ต้น–GAT-PAT (iOS)`** (console app 1551618292). App id `ca-app-pub-5804107706055854~1551618292` → `ios/app/App/App/Info.plist`. Banner unit `ca-app-pub-5804107706055854/7716686913` → `app/index.html` `CONFIG.iosBannerId`, `isTesting:false`. Android ids ใน `CONFIG` ยังเป็น Google TEST (ไม่มี Android build ใช้ `app/` ตอนนี้) — เปลี่ยน + สร้าง AdMob app Android ตอน merge Android. ยังไม่มี iOS interstitial unit (โค้ดข้าม interstitial บน iOS อยู่แล้ว) |
+| per-set history | `localStorage['vocab_v1:<setId>']` แยกคะแนนต่อชุด; ชุดที่เลือกล่าสุดอยู่ที่ `localStorage['vocab_set']` |
+
+**ยังไม่แตะฝั่ง Android:** `android-*/`, `capacitor.config.{m1,m2,m3,gatpat,vocab1000}.ts`,
+`เปิด-*.bat`, `vocab1000/`, `www/`, `vocab_by_grade/` คงเดิมทุกอย่าง (เป็น source of truth
+ของชุดคำที่ extract มาไว้ใน `app/data/`)
+
+**Setup ก่อน build (ทำแล้ว 2026-09-02):** App ID register, ASC app record (Apple ID 6807688657),
+provisioning profile `vocab_merged_appstore` อัปโหลดเข้า Codemagic, AdMob app + banner unit,
+ค่าทั้งหมดใส่ลงไฟล์แล้ว (`codemagic.yaml`, `capacitor.config.app.ts`, `ios/app/**`, `app/index.html`)
+
+**เหลือทำเอง:**
+1. Codemagic → re-add แอปนี้จาก repo (workflow `vocab-ios`) แล้ว Start new build → TestFlight
+   — ตรวจ integration `codemagic_api_key` (App Store Connect API key) ยังเชื่อมอยู่
+2. **หลังแอปรวมผ่านรีวิว** → เอา 5 แอปเดิมออกจาก App Store (App Store Connect →
+   Pricing and Availability → Remove from sale)
+3. ตอน merge ฝั่ง Android ทีหลัง: สร้าง AdMob app แยกสำหรับ Android + แทน TEST ids ใน
+   `app/index.html` `CONFIG.androidBannerId`/`androidInterstitialId`
+
+ตารางข้างล่างนี้ยังเป็นสถานะ **ฝั่ง Android + iOS เดิม (ก่อนรวม)** — เก็บไว้อ้างอิง
+
 ## ตารางแอปทั้งหมด
 
 | ชื่อแอป (Play Store) | โฟลเดอร์ Android | โฟลเดอร์ iOS | applicationId (Android) | Bundle ID (iOS) | Launcher | Capacitor config | versionCode ล่าสุด |
@@ -94,3 +130,26 @@ Play Console → Data safety (เก็บ Advertising ID) และ App Store �
 **แก้พลอยได้:** `vocab1000/index.html` เดิมเรียก `../capacitor.js` (พาธผิด อยู่ที่ web root
 ต้องเป็น `capacitor.js`) — แก้แล้ว มิฉะนั้นปลั๊กอิน Capacitor (รวม TTS + AdMob) ไม่โหลด
 ในแอป Vocab1000
+
+### หน่วยโฆษณาเพิ่มเติม — Vocab1000 (Android) เท่านั้น (2026-09-01)
+
+สร้างเพิ่มใน AdMob console ใต้แอป **Vocab1000 (Android)** (`~9700441758`):
+
+| ชื่อ unit ใน AdMob | รูปแบบ | Ad unit id |
+|---|---|---|
+| `Banner v2` | แบนเนอร์ | `ca-app-pub-5804107706055854/4059377460` |
+| `Interstitial` | คั่นระหว่างหน้า | `ca-app-pub-5804107706055854/1832564178` |
+
+- `vocab1000/index.html` → `CONFIG.androidBannerId` เปลี่ยนจาก `.../1369314146` (unit เดิมชื่อ
+  `Banner`) มาเป็น `Banner v2` แล้ว — unit เดิมยังไม่ได้ลบ ยังอยู่ใน console เฉยๆ
+- **จังหวะการแสดง (แก้ 2026-09-01):** banner แสดงตลอด — เอา grace 15 วันออกแล้ว
+  (`hideDays` / `admob_install_ts` ถูกลบทิ้ง) ส่วน interstitial เด้ง **อย่างมาก 3 วัน/ครั้ง**
+  (`interstitialDays: 3`) นับจาก timestamp ใน localStorage `admob_interstitial_ts` ซึ่งเขียน
+  เฉพาะตอนที่โฆษณาขึ้นจริง (โหลดไม่สำเร็จไม่เผาโควต้า 3 วัน) — เด้งหลังโหลดหน้าเสร็จ 4 วินาที
+  **ติดตั้งใหม่จะรอ 3 วันก่อนถึงเด้งครั้งแรก** (เปิดแอปครั้งแรก = seed timestamp แล้วไม่แสดง)
+- interstitial รันเฉพาะ Android — iOS ข้ามเพราะยังไม่ได้สร้าง unit ไว้
+- iOS ยังไม่ได้แตะ: `CONFIG.iosBannerId` ยังเป็น `.../1686220367` และแอป Vocab1000 (iOS)
+  ยังมี unit เดียวเหมือนเดิม
+- ไฟล์ `android-vocab1000/app/src/main/assets/public/index.html` กับ
+  `ios/vocab1000/App/App/public/index.html` เป็น build output ยังค้าง id ตัวเก่า/TEST อยู่ —
+  จะอัปเดตเองตอนรัน `เปิด-Vocab1000.bat` (`npx cap sync android`)
