@@ -12,6 +12,12 @@
       "runtimeExecutable": "python",
       "runtimeArgs": ["-m", "http.server", "8754", "--directory", "D:\\AndroidStudioProjects\\vocab1000app\\vocab1000"],
       "port": 8754
+    },
+    {
+      "name": "vocab-merged",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "http.server", "8755", "--directory", "D:\\AndroidStudioProjects\\vocab1000app\\app"],
+      "port": 8755
     }
   ]
 }

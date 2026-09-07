@@ -1,22 +1,26 @@
-# iOS → TestFlight for all 5 apps. Build one at a time from the Codemagic UI
-# (or push to main to build every workflow).
+# iOS → TestFlight for the single MERGED app (ios/app).
 #
-# BEFORE THE FIRST BUILD OF EACH APP (see C:\Users\maew0\Documents\codemagic-appstore-checklist.md):
-#   1. Apple Developer Portal → Identifiers → register the Bundle ID (must match BUNDLE_ID below).
-#   2. App Store Connect → Apps → New App with that Bundle ID → note the numeric
-#      "Apple ID" (App Information) → put it in APP_STORE_APPLE_ID below.
+# The 5 old per-grade / GAT-PAT iOS apps were consolidated into one app with an
+# in-app dataset picker (Apple flagged the 5 as spam — same look, same concept).
+# Their workflows were removed from this file; retire their App Store listings once
+# this merged app is approved.
+#
+# BEFORE THE FIRST BUILD (see C:\Users\maew0\Documents\codemagic-appstore-checklist.md):
+#   App name "ศัพท์อังกฤษ ม.ต้น", Bundle ID com.simonjhuan.vocabdaily (already filled in below).
+#   1. DONE — App ID com.simonjhuan.vocabdaily registered in Apple Developer Portal.
+#   2. DONE — App Store Connect app record created, Apple ID 6807688657 (name "ศัพท์อังกฤษ ม.ต้น–GAT-PAT").
 #   3. Apple Developer Portal → Profiles → + → App Store Connect → pick the App ID +
 #      the Distribution cert that matches the Codemagic identity `distribution` →
 #      Generate → Download the .mobileprovision.
 #   4. Codemagic → Team settings → Code signing identities → iOS provisioning profiles →
-#      Upload it → set its Reference name to the value in `provisioning_profiles` below.
+#      Upload it → set its Reference name to `vocab_merged_appstore`.
 #   5. Codemagic → Team settings → Integrations → Developer Portal: an App Store Connect
-#      API key named `codemagic_api_key` must exist (reused by every workflow).
+#      API key named `codemagic_api_key` must exist.
 #
 # This account's Distribution certs are Codemagic-managed → signing MUST use Form 2
 # (`provisioning_profiles` + `certificates`), never Form 1 (`distribution_type` + `bundle_identifier`).
 # 3 Distribution certs exist (Apple's cap — do NOT create another). Codemagic identity
-# `distribution` = the cert expiring 2027-07-17. Create each provisioning profile against
+# `distribution` = the cert expiring 2027-07-17. Create the provisioning profile against
 # that cert.
 
 definitions:
@@ -60,8 +64,8 @@ definitions:
 
 workflows:
 
-  m1-ios:
-    name: Vocab M1 — iOS TestFlight
+  vocab-ios:
+    name: Vocab (merged) — iOS TestFlight
     max_build_duration: 60
     instance_type: mac_mini_m2
     integrations:
@@ -69,117 +73,17 @@ workflows:
     environment:
       ios_signing:
         provisioning_profiles:
-          - vocab_m1_appstore
+          - vocab_merged_appstore
         certificates:
           - distribution
       node: 22
       xcode: latest
       vars:
-        CAP_CONFIG: "capacitor.config.m1.ts"
-        APP_DIR: "ios/M1/App"
-        XCODE_PROJECT: "ios/M1/App/App.xcodeproj"
-        BUNDLE_ID: "com.vocab.m1"
-        APP_STORE_APPLE_ID: 6806248798
-    triggering: *triggering
-    scripts: [*npm_ci, *cap_sync, *use_profiles, *bump_build, *build_ipa]
-    artifacts: *artifacts
-    publishing: *publishing
-
-  m2-ios:
-    name: Vocab M2 — iOS TestFlight
-    max_build_duration: 60
-    instance_type: mac_mini_m2
-    integrations:
-      app_store_connect: codemagic_api_key
-    environment:
-      ios_signing:
-        provisioning_profiles:
-          - vocab_m2_appstore
-        certificates:
-          - distribution
-      node: 22
-      xcode: latest
-      vars:
-        CAP_CONFIG: "capacitor.config.m2.ts"
-        APP_DIR: "ios/M2/App"
-        XCODE_PROJECT: "ios/M2/App/App.xcodeproj"
-        BUNDLE_ID: "com.vocab.m2"
-        APP_STORE_APPLE_ID: 6806250464
-    triggering: *triggering
-    scripts: [*npm_ci, *cap_sync, *use_profiles, *bump_build, *build_ipa]
-    artifacts: *artifacts
-    publishing: *publishing
-
-  m3-ios:
-    name: Vocab M3 — iOS TestFlight
-    max_build_duration: 60
-    instance_type: mac_mini_m2
-    integrations:
-      app_store_connect: codemagic_api_key
-    environment:
-      ios_signing:
-        provisioning_profiles:
-          - vocab_m3_appstore
-        certificates:
-          - distribution
-      node: 22
-      xcode: latest
-      vars:
-        CAP_CONFIG: "capacitor.config.m3.ts"
-        APP_DIR: "ios/M3/App"
-        XCODE_PROJECT: "ios/M3/App/App.xcodeproj"
-        BUNDLE_ID: "com.vocab.m3"
-        APP_STORE_APPLE_ID: 6806251172
-    triggering: *triggering
-    scripts: [*npm_ci, *cap_sync, *use_profiles, *bump_build, *build_ipa]
-    artifacts: *artifacts
-    publishing: *publishing
-
-  gatpat-ios:
-    name: GAT-PAT Daily Words — iOS TestFlight
-    max_build_duration: 60
-    instance_type: mac_mini_m2
-    integrations:
-      app_store_connect: codemagic_api_key
-    environment:
-      ios_signing:
-        provisioning_profiles:
-          - gatpat_appstore
-        certificates:
-          - distribution
-      node: 22
-      xcode: latest
-      vars:
-        CAP_CONFIG: "capacitor.config.gatpat.ts"
-        APP_DIR: "ios/gatpat/App"
-        XCODE_PROJECT: "ios/gatpat/App/App.xcodeproj"
-        BUNDLE_ID: "com.gatpat.dailywords"   # iOS only — Android/Play stays com.vocab1000app
-        APP_STORE_APPLE_ID: 6806252920
-    triggering: *triggering
-    scripts: [*npm_ci, *cap_sync, *use_profiles, *bump_build, *build_ipa]
-    artifacts: *artifacts
-    publishing: *publishing
-
-  vocab1000-ios:
-    name: Vocab1000 — iOS TestFlight
-    max_build_duration: 60
-    instance_type: mac_mini_m2
-    integrations:
-      app_store_connect: codemagic_api_key
-    environment:
-      ios_signing:
-        provisioning_profiles:
-          - vocab1000_appstore
-        certificates:
-          - distribution
-      node: 22
-      xcode: latest
-      vars:
-        CAP_CONFIG: "capacitor.config.vocab1000.ts"
-        APP_DIR: "ios/vocab1000/App"
-        XCODE_PROJECT: "ios/vocab1000/App/App.xcodeproj"
-        BUNDLE_ID: "com.vocab1000.app"
-        APP_STORE_APPLE_ID: 6806255589
+        CAP_CONFIG: "capacitor.config.app.ts"
+        APP_DIR: "ios/app/App"
+        XCODE_PROJECT: "ios/app/App/App.xcodeproj"
+        BUNDLE_ID: "com.simonjhuan.vocabdaily"
+        APP_STORE_APPLE_ID: 6807688657
     triggering: *triggering
     scripts: [*npm_ci, *cap_sync, *use_profiles, *bump_build, *build_ipa]
     artifacts: *artifacts
