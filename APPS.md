@@ -26,9 +26,30 @@ Apple มองว่า 5 แอปนี้เป็น spam (หน้าต�
 | AdMob | AdMob app **`ศัพท์อังกฤษ ม.ต้น–GAT-PAT (iOS)`** (console app 1551618292). App id `ca-app-pub-5804107706055854~1551618292` → `ios/app/App/App/Info.plist`. Banner unit `ca-app-pub-5804107706055854/7716686913` → `app/index.html` `CONFIG.iosBannerId`, `isTesting:false`. Android ids ใน `CONFIG` ยังเป็น Google TEST (ไม่มี Android build ใช้ `app/` ตอนนี้) — เปลี่ยน + สร้าง AdMob app Android ตอน merge Android. ยังไม่มี iOS interstitial unit (โค้ดข้าม interstitial บน iOS อยู่แล้ว) |
 | per-set history | `localStorage['vocab_v1:<setId>']` แยกคะแนนต่อชุด; ชุดที่เลือกล่าสุดอยู่ที่ `localStorage['vocab_set']` |
 
-**ยังไม่แตะฝั่ง Android:** `android-*/`, `capacitor.config.{m1,m2,m3,gatpat,vocab1000}.ts`,
+**ยังไม่แตะฝั่ง Android ตอนแรก:** `android-*/`, `capacitor.config.{m1,m2,m3,gatpat,vocab1000}.ts`,
 `เปิด-*.bat`, `vocab1000/`, `www/`, `vocab_by_grade/` คงเดิมทุกอย่าง (เป็น source of truth
 ของชุดคำที่ extract มาไว้ใน `app/data/`)
+
+## ⚠️ 2026-09-05 — Android รวมเป็นแอปเดียวเช่นกัน (ใช้ `com.vocab1000.app` เดิม)
+
+ต่างจาก iOS ตรงที่ **ไม่ได้จองแพ็กเกจใหม่** — ใช้ `android-vocab1000` (`com.vocab1000.app`,
+แอป "Vocab1000" ที่ผ่านรีวิว Play Store อยู่แล้ว) เป็นร่างหลัก แล้วชี้ webDir ไปที่ `app/`
+เว็บตัวเดียวกับที่ iOS ใช้ (dropdown เลือกชุดคำศัพท์ในแอป) แทน `vocab1000/` เดิม
+
+| ส่วน | ค่า |
+|---|---|
+| Web dir | `app/` (เหมือน iOS) |
+| Capacitor config | `capacitor.config.vocab1000.ts` — `webDir: 'app'`, `appId` และ `android.path` เดิมไม่เปลี่ยน |
+| Android project | `android-vocab1000` (โปรเจกต์เดิม ไม่ได้สร้างใหม่) |
+| applicationId | `com.vocab1000.app` — **แอปเดียวที่ผ่านสโตร์จริงของ package นี้** ชื่อ listing ปัจจุบันบน Play Store คือ **"เกมส์ศัพท์อังกฤษ ม.ต้น–GAT-PAT"** (ไม่ใช่ "Vocab1000" ตามที่เข้าใจผิดตอนแรก) — ผู้ใช้ที่ติดตั้งอยู่แล้วจะได้อัปเดตเป็นแอปรวมทันทีที่อัปเดตแอป |
+| ชื่อ on-device | `เกมส์ศัพท์อังกฤษ ม.ต้น–GAT-PAT` (`strings.xml` `app_name`/`title_activity_main` + `capacitor.config.vocab1000.ts` `appName` แก้ให้ตรงกับชื่อ listing จริงแล้ว 2026-09-05) |
+| AdMob | ใช้ AdMob app เดิมของ Vocab1000 (Android) ต่อ (`~9700441758`) เพราะ package ไม่เปลี่ยน — เอา unit จริง `Banner v2` (`.../4059377460`) และ `Interstitial` (`.../1832564178`) ใส่ใน `app/index.html` `CONFIG` แทนค่า TEST เดิม |
+| เปิดโปรเจกต์ | `เปิด-Vocab1000.bat` เหมือนเดิม (sync `npx cap sync android` จะดึง `app/` เข้า `android-vocab1000/app/src/main/assets/public` ให้อัตโนมัติ) |
+
+**ยังไม่ได้ทำ / ต้องตัดสินใจเอง:**
+1. เปิด Android Studio (`เปิด-Vocab1000.bat`) แล้ว build/test จริงบนเครื่อง — bump `versionCode`/`versionName` ก่อนอัปโหลด Play Console
+2. หลังอัปเดตขึ้น Play Store และผ่านรีวิวแล้ว — จะถอด 4 แอปเดิม (`android-M1` `com.vocab.m1`, `android-M2` `com.vocab.m2`, `android-M3` `com.vocab.moo3`/`com.vocab.m3`, `android-gatpat` `com.vocab1000app`) ออกจาก Play Store หรือเก็บไว้ (ยังไม่ตอบคำถามนี้) — โฟลเดอร์เหล่านี้ยังไม่ได้ลบออกจาก repo
+3. `เปิด-M1.bat` / `เปิด-M2.bat` / `เปิด-M3.bat` / `เปิด-GAT-PAT.bat` ยังเปิดโปรเจกต์เดิมได้ปกติ แต่ไม่ควรใช้ build ใหม่อีกแล้วเพราะแอปเป้าหมายรวมเป็น `android-vocab1000` ตัวเดียว
 
 **Setup ก่อน build (ทำแล้ว 2026-09-02):** App ID register, ASC app record (Apple ID 6807688657),
 provisioning profile `vocab_merged_appstore` อัปโหลดเข้า Codemagic, AdMob app + banner unit,

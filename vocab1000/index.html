@@ -1667,27 +1667,43 @@ window.onload = () => {
 };
 </script>
 
-<!-- AdMob banner: hidden for the first 15 days after install. Native (@capacitor-community/admob); no-op on web / when plugin missing. -->
+<!-- AdMob: banner always on; interstitial at most once every 3 days. Native (@capacitor-community/admob); no-op on web / when plugin missing. -->
 <script>
 (function () {
   var CONFIG = {
-    androidBannerId: 'ca-app-pub-5804107706055854/1369314146', // Vocab1000 (Android) banner unit
-    iosBannerId:     'ca-app-pub-5804107706055854/1686220367', // Vocab1000 (iOS) banner unit
-    isTesting:       false,
-    hideDays:        15
+    androidBannerId:       'ca-app-pub-5804107706055854/4059377460', // Vocab1000 (Android) banner unit "Banner v2"
+    androidInterstitialId: 'ca-app-pub-5804107706055854/1832564178', // Vocab1000 (Android) unit "Interstitial" (no iOS unit yet)
+    iosBannerId:           'ca-app-pub-5804107706055854/1686220367', // Vocab1000 (iOS) banner unit
+    isTesting:             false,
+    interstitialDays:      3,
+    interstitialDelayMs:   4000   // let the word list render first; no ad on a blank screen
   };
-  var KEY = 'admob_install_ts';
-  function graceOver() {
+  var LAST_INTERSTITIAL = 'admob_interstitial_ts';
+  function interstitialDue() {
     var now = Date.now();
-    var ts = parseInt(localStorage.getItem(KEY) || '0', 10);
-    if (!ts || ts > now) { ts = now; try { localStorage.setItem(KEY, String(now)); } catch (e) {} }
-    return (now - ts) / 86400000 >= CONFIG.hideDays;
+    var ts = parseInt(localStorage.getItem(LAST_INTERSTITIAL) || '0', 10);
+    // First run (or a device clock moved backwards): start the clock, show nothing yet,
+    // so a fresh install gets its first interstitial only after interstitialDays.
+    if (!ts || ts > now) {
+      try { localStorage.setItem(LAST_INTERSTITIAL, String(now)); } catch (e) {}
+      return false;
+    }
+    return (now - ts) / 86400000 >= CONFIG.interstitialDays;
   }
-  async function showBanner() {
+  async function showInterstitial(AdMob, isIOS) {
+    if (isIOS || !interstitialDue()) return;   // iOS has no interstitial unit yet
+    try {
+      await AdMob.prepareInterstitial({ adId: CONFIG.androidInterstitialId, isTesting: CONFIG.isTesting });
+      await AdMob.showInterstitial();
+      // stamp only after it actually showed, so a failed load does not burn the 3-day window
+      try { localStorage.setItem(LAST_INTERSTITIAL, String(Date.now())); } catch (e) {}
+    } catch (e) { if (window.console) console.warn('[admob interstitial]', e); }
+  }
+  async function startAds() {
     var cap = window.Capacitor;
     if (!cap || typeof cap.isNativePlatform !== 'function' || !cap.isNativePlatform()) return;
     var AdMob = cap.Plugins && cap.Plugins.AdMob;
-    if (!AdMob || !graceOver()) return;
+    if (!AdMob) return;
     var isIOS = cap.getPlatform && cap.getPlatform() === 'ios';
     try {
       await AdMob.initialize({});
@@ -1702,9 +1718,10 @@ window.onload = () => {
         isTesting: CONFIG.isTesting
       });
     } catch (e) { if (window.console) console.warn('[admob]', e); }
+    setTimeout(function () { showInterstitial(AdMob, isIOS); }, CONFIG.interstitialDelayMs);
   }
-  if (document.readyState === 'complete') showBanner();
-  else window.addEventListener('load', showBanner);
+  if (document.readyState === 'complete') startAds();
+  else window.addEventListener('load', startAds);
 })();
 </script>
 </body>
