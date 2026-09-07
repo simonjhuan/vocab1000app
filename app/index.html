@@ -404,9 +404,9 @@ const VOCAB_SETS_META = [
   { id: 'm1',     label: 'ศัพท์อังกฤษ ม.1',      logo: '✦ ภาษาอังกฤษ ม.1 ✦',   h1: 'คำศัพท์ ม.1',     tag: 'วันละ 30 คำ • พร้อมคำอ่าน • บันทึกคะแนนอัตโนมัติ' },
   { id: 'm2',     label: 'ศัพท์อังกฤษ ม.2',      logo: '✦ ภาษาอังกฤษ ม.2 ✦',   h1: 'คำศัพท์ ม.2',     tag: 'วันละ 30 คำ • พร้อมคำอ่าน • บันทึกคะแนนอัตโนมัติ' },
   { id: 'm3',     label: 'ศัพท์อังกฤษ ม.3',      logo: '✦ ภาษาอังกฤษ ม.3 ✦',   h1: 'คำศัพท์ ม.3',     tag: 'วันละ 30 คำ • พร้อมคำอ่าน • บันทึกคะแนนอัตโนมัติ' },
-  { id: 'm4',     label: 'ศัพท์อังกฤษ ม.4',      logo: '✦ ภาษาอังกฤษ ม.4 ✦',   h1: 'คำศัพท์ ม.4',     tag: '1,000 คำ • วันละ 30 คำ • คำศัพท์ระดับมัธยมปลาย' },
-  { id: 'm5',     label: 'ศัพท์อังกฤษ ม.5',      logo: '✦ ภาษาอังกฤษ ม.5 ✦',   h1: 'คำศัพท์ ม.5',     tag: '1,000 คำ • วันละ 30 คำ • คำศัพท์ระดับมัธยมปลาย' },
-  { id: 'm6',     label: 'ศัพท์อังกฤษ ม.6',      logo: '✦ ภาษาอังกฤษ ม.6 ✦',   h1: 'คำศัพท์ ม.6',     tag: '1,000 คำ • วันละ 30 คำ • เตรียมความพร้อมเข้ามหาวิทยาลัย' },
+  { id: 'm4',     label: 'ศัพท์อังกฤษ ม.4',      logo: '✦ ภาษาอังกฤษ ม.4 ✦',   h1: 'คำศัพท์ ม.4',     tag: 'วันละ 30 คำ • ระดับ CEFR B2–C1 • บันทึกคะแนนอัตโนมัติ' },
+  { id: 'm5',     label: 'ศัพท์อังกฤษ ม.5',      logo: '✦ ภาษาอังกฤษ ม.5 ✦',   h1: 'คำศัพท์ ม.5',     tag: 'วันละ 30 คำ • ศัพท์วิชาการ วิทยาศาสตร์ สังคม • บันทึกคะแนนอัตโนมัติ' },
+  { id: 'm6',     label: 'ศัพท์อังกฤษ ม.6',      logo: '✦ ภาษาอังกฤษ ม.6 ✦',   h1: 'คำศัพท์ ม.6',     tag: 'วันละ 30 คำ • ศัพท์ระดับสูง เตรียมสอบเข้ามหาวิทยาลัย' },
   { id: 'gatpat', label: 'GAT-PAT Daily Words', logo: '✦ GAT-PAT ✦',          h1: 'คำศัพท์ประจำวัน', tag: 'วันละ 30 คำ • เตรียมสอบเข้ามหาวิทยาลัย • บันทึกคะแนนอัตโนมัติ' },
 ];
 const DEFAULT_SET = 'mton';
@@ -418,66 +418,12 @@ try {
 } catch (e) {}
 
 let allWords = [];
-let upperSecondarySetsPromise = null;
 
 function setMeta(id) { return VOCAB_SETS_META.find(s => s.id === id) || VOCAB_SETS_META[0]; }
-
-function loadUpperSecondarySets() {
-  if (upperSecondarySetsPromise) return upperSecondarySetsPromise;
-
-  // The national curriculum gives one vocabulary target for Grades 10–12,
-  // rather than a mandatory word list per year. Build three non-overlapping
-  // 1,000-word study sets, each containing advanced university-prep words
-  // plus essential vocabulary with Thai meanings and, where available, guides.
-  upperSecondarySetsPromise = Promise.all(
-    ['m3', 'm2', 'm1', 'mton', 'gatpat'].map(loadSetData)
-  ).then(([m3, m2, m1, mton, gatpat]) => {
-    const normalized = word => word.word.trim().toLowerCase();
-    const addUnique = (target, candidates, used) => {
-      for (const word of candidates) {
-        if (target.length === 1000) break;
-        const key = normalized(word);
-        if (key && !used.has(key)) {
-          target.push(word);
-          used.add(key);
-        }
-      }
-    };
-    const makeSet = (id, advancedWords, primaryWords, fallbackWords) => {
-      const words = [];
-      const used = new Set();
-      addUnique(words, advancedWords, used);
-      addUnique(words, primaryWords, used);
-      addUnique(words, fallbackWords, used);
-      if (words.length !== 1000) throw new Error(`not enough words for ${id}`);
-      return {
-        id,
-        label: `ศัพท์อังกฤษ ม.${id.slice(1)}`,
-        words,
-        source: 'Thai Basic Education Core Curriculum 2008 — Grades 10–12'
-      };
-    };
-
-    const allFallbacks = [m3.words, m2.words, m1.words, mton.words];
-    const sets = {
-      m4: makeSet('m4', gatpat.words.slice(0, 102), m3.words, allFallbacks),
-      m5: makeSet('m5', gatpat.words.slice(102, 204), m2.words, allFallbacks),
-      m6: makeSet('m6', gatpat.words.slice(204, 306), m1.words, allFallbacks)
-    };
-    Object.assign(window.VOCAB_SETS, sets);
-    return sets;
-  });
-  return upperSecondarySetsPromise;
-}
 
 function loadSetData(id) {
   return new Promise((resolve, reject) => {
     if (window.VOCAB_SETS && window.VOCAB_SETS[id]) return resolve(window.VOCAB_SETS[id]);
-
-    if (['m4', 'm5', 'm6'].includes(id)) {
-      loadUpperSecondarySets().then(sets => resolve(sets[id])).catch(reject);
-      return;
-    }
 
     const s = document.createElement('script');
     s.src = 'data/' + id + '.js';
